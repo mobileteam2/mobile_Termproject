@@ -1,0 +1,113 @@
+package com.example.mobile_termproject.Barcode;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.common.InputImage;
+import java.io.File;
+import android.Manifest;
+import android.util.Log;
+import android.widget.Toast;
+
+public class Barcode {
+    /*
+    바코드 관련 helper 클래스.
+     */
+    public static final int REQUEST_PERMISSION_CAMERA = 1;
+    public static final int REQUEST_IMAGE_CAPTURE = 10;
+    private Uri photoUri;
+    private File photoFile;
+    public Barcode(){}
+
+    public File getPhotoFile(){
+        return photoFile;
+    }
+
+    public void onRequestPermissionsResult(Activity activity, int requestCode,
+                                           String[] permission, int[] grantResults){
+        if(requestCode == REQUEST_PERMISSION_CAMERA){
+            if(grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                launchCamera(activity);
+            } else{
+                Toast.makeText(activity, "카메라 권한 필요", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public void checkCameraPermission(Activity activity){
+        if(ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{android.Manifest.permission.CAMERA},
+                    REQUEST_PERMISSION_CAMERA);
+        }
+    }
+    public void launchCamera(Activity activity) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        checkCameraPermission(activity);
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            try {
+                File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                if (storageDir != null && !storageDir.exists()) {
+                    storageDir.mkdirs();
+                }
+
+                photoFile = new File(storageDir, "image.png");
+                photoUri = FileProvider.getUriForFile(
+                        activity,
+                        activity.getPackageName() + ".fileprovider",
+                        photoFile
+                );
+
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                activity.startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(activity, "파일 생성 오류: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("DEBUG", "ERROR: " + e.getMessage());
+            }
+        }
+    }
+
+    public void detectBarcode(
+            String imagePath,
+            Context context,
+            BarcodeResultListner listner
+    ){
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        if(bitmap == null){
+            return;
+        }
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        BarcodeScanner scanner = BarcodeScanning.getClient();
+
+        scanner.process(image)
+                .addOnSuccessListener(barcodes -> {
+                    if (barcodes.isEmpty()){
+                        listner.onFailure("can' find barcode");
+                    } else {
+                        listner.onSuccess(barcodes.get(0).getRawValue());
+                    }
+                })
+                .addOnFailureListener(e ->
+                        listner.onFailure("fail to read barcode: " + e.getMessage()));
+    }
+
+    public interface BarcodeResultListner {
+        void onSuccess(String barcodeValue);
+        void onFailure(String errMsg);
+    }
+
+}

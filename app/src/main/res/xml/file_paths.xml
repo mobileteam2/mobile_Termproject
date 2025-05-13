@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+    - 바코드 인식 목적
+        1. 바코드 사진 촬영
+        2. 앱 내 Pictures 저장 경로에 barcode_images라는 이름으로 저장
+    -->
+    <external-files-path
+        name="barcode_images"
+        path="Pictures/"/>
+</paths>
