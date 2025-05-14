@@ -207,3 +207,130 @@ barcode.detectBarcode(imagePath, this, new Barcode.BarcodeResultListner() {
         }
     });
 ```
+
+```java
+public String getInfo(String barcodeValue){
+    String result = "";
+    try {
+        String urlStr = ApiManager.BarcodeURL +  "/get_product_info?barcode=" + barcodeValue;
+        URL url = new URL(urlStr);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String returnStr = reader.readLine();  
+            reader.close();
+            if (returnStr != null){
+                result = returnStr;
+            } else{
+                result = "NULL";
+            }
+        } else {
+            result = "서버 응답 오류: " + responseCode;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        result = "요청 실패: " + e.getMessage();
+    }
+    return result;
+}
+```
+
+`URL` 객체 (HTTP 요청) -> 서버로터의 응답 내용 반환 
+
+```java
+connection.setConnectTimeout(5000);
+connection.setReadTimeout(5000);
+```
+
+클라이언트가 기다리는 최대 시간
+- 서버 연결 시간
+- 연결 후 서버 응답 반환 시간
+각각 최대 5초로 설정.
+
+```python
+from flask import Flask, request, jsonify
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+app = Flask(__name__)
+
+@app.route('/getInfo', methods=['GET'])
+def get_product_info():
+    barcode = request.args.get('barcode')
+    if not barcode:
+        return jsonify({'error': 'No barcode provided'}), 400
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+
+    # -------------------------------------
+    # chromeDirver가 시스템 환경변수에 설정된 경우
+    # -------------------------------------
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    # -------------------------------------
+    # chromeDirver가 시스템 환경변수에 설정되지 않은 경우, 직접 경로 설정
+    # -------------------------------------
+    #service = Service(executable_path="\chromedriver.exe")
+    #driver = webdriver.Chrome(service=service, options=chrome_options)
+    
+    try:
+        url = 'https://www.koreannet.or.kr/front/allproduct/prodSrchList.do'
+        driver.get(url)
+
+        search_input = driver.find_element(By.ID, 'searchText')
+        search_input.clear()
+        search_input.send_keys(barcode)
+
+        submit_btn = driver.find_element(By.CSS_SELECTOR, "input.submit")
+        submit_btn.click()
+
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div.item"))
+        )
+
+        product_name_elem = driver.find_element(By.CSS_SELECTOR, "div.item .nm")
+        product_name = product_name_elem.text.strip()
+        
+        return product_name
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        driver.quit()
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+```
+
+``` bash
+"serverIp/getInfo?barcode=바코드값"
+```
+을 통해 해당 바코드 상품의 정보 반환. 
+이 서버의 IP는 다음 `ApiManger`클래스에서 관리
+```java
+public class ApiManager {
+    public static final String BarcodeURL = "http://10.0.2.2:5000";
+}
+```
+
+서버 실행 방법 
+1. server.py 코드 실행
+2. 같은 IP에서 테스트 경우.
+   - server IP = local IP -> BarcodeURL에 저장
+3. 다른 IP에서 테스트 경우.
+```bash
+.\ngrok.exe http 5000
+```
+이후 server IP의 도메인 반환. -> BarcodeURL에 저장.

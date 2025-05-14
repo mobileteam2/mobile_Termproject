@@ -15,7 +15,13 @@ import androidx.core.content.FileProvider;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import android.Manifest;
 import android.util.Log;
 import android.widget.Toast;
@@ -108,6 +114,36 @@ public class Barcode {
     public interface BarcodeResultListner {
         void onSuccess(String barcodeValue);
         void onFailure(String errMsg);
+    }
+
+    public String getInfo(String barcodeValue){
+        String result = "";
+        try {
+            String urlStr = ApiManager.BarcodeURL +  "/get_product_info?barcode=" + barcodeValue;
+            URL url = new URL(urlStr);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String returnStr = reader.readLine();
+                reader.close();
+                if (returnStr != null){
+                    result = returnStr;
+                } else{
+                    result = "NULL";
+                }
+            } else {
+                result = "서버 응답 오류: " + responseCode;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = "요청 실패: " + e.getMessage();
+        }
+        return result;
     }
 
 }
