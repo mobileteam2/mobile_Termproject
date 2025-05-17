@@ -1,5 +1,8 @@
 package com.example.mobile_termproject.Barcode;
 
+import static com.example.mobile_termproject.API.ApiManager.clientId;
+import static com.example.mobile_termproject.API.ApiManager.clientSecret;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,19 +15,22 @@ import android.provider.MediaStore;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import com.example.mobile_termproject.API.ApiManager;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import android.Manifest;
 import android.util.Log;
 import android.widget.Toast;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Barcode {
     /*
@@ -141,6 +147,63 @@ public class Barcode {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            result = "요청 실패: " + e.getMessage();
+        }
+        return result;
+    }
+
+    public String getExtraInfoWithNaver(String foodName){
+        String result = "";
+        try {
+            String encoded = URLEncoder.encode(foodName, "UTF-8");
+            String apiURL = "https://openapi.naver.com/v1/search/shop.json?query=" + foodName;
+
+            URL url = new URL(apiURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("X-Naver-Client-Id", clientId);
+            connection.setRequestProperty("X-Naver-Client-Secret", clientSecret);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK){
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null){
+                    response.append(line);
+                }
+                reader.close();
+
+                JSONObject json = new JSONObject(response.toString());
+                JSONArray items = json.getJSONArray("items");
+
+                if(items.length() > 0){
+                    JSONObject item = items.getJSONObject(0);
+                    String title = item.getString("title").replaceAll("<[^>]*>", "");
+                    String image = item.getString("iamge");
+                    String category = "";
+                    ArrayList<String> categories = new ArrayList<>();
+                    for (int i = 0; i < 4; i++){
+                        String key = "category"+(i+1);
+                        if(item.has(key) && !item.getString(key).isEmpty()){
+                            categories.set(i, item.getString(key));
+                        }
+                    }
+                    /*
+                        DB 데이터 삽입
+                     */
+
+                    result = "food name: " + title + "\nImage: " + image + "\nCategory: " + categories.get(0);
+                } else {
+                    result = "검색 결과 없음.";
+                }
+            } else {
+                result = "네이버 API error: " + responseCode;
+            }
+        } catch (Exception e){
             result = "요청 실패: " + e.getMessage();
         }
         return result;

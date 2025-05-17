@@ -5,7 +5,7 @@ public class Barcode{}
 바코드 관련 기능 클래스.
 - 사진 촬영 및 저장
 - 바코드 인식 
-- 바코드 정보 -> 상품 정보 반환 (예정)
+- 바코드 정보 -> 상품 정보 반환 
 
 ```java
 public void launchCamera(Activity activity) {

@@ -38,6 +38,9 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
-    implementation(libs.barcode.scanning)
     // 바코드 인식 라이브러리
+    implementation(libs.barcode.scanning)
+
+    // Recipe Gson 반환용
+    implementation libs.gson
 }
