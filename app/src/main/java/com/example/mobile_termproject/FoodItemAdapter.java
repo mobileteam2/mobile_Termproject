@@ -6,8 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.mobile_termproject.Data.FoodItem;
 
@@ -24,6 +28,23 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     }
 
     @Override
+    public int getCount() {
+        return super.getCount();
+    }
+
+    @Override
+    public int getPosition(@Nullable FoodItem item) {
+        return super.getPosition(item);
+    }
+
+    @Nullable
+    @Override
+    public FoodItem getItem(int position) {
+        return super.getItem(position);
+    }
+
+    @NonNull
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
@@ -33,6 +54,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         FoodItem item = getItem(position);
 
         // 🔽 TextView 바인딩 추가
+        ImageView tvImage = v.findViewById(R.id.imgIngredient);  // 이미지
         TextView tvName = v.findViewById(R.id.tvFoodName);       // 이름
         TextView tvCategory = v.findViewById(R.id.tvCategory);   // 카테고리
         TextView tvExpiration = v.findViewById(R.id.tvExpirationDate); // 유통기한

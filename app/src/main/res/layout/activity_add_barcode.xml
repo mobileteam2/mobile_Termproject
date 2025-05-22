@@ -18,9 +18,19 @@
         android:orientation="vertical"
         >
         <Button
+            android:id="@+id/btnCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="카메라"/>
+        <Button
+            android:id="@+id/btnImageSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사진보내기"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgCamera"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

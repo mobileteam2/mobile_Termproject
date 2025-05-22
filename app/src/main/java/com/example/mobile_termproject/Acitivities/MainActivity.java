@@ -3,20 +3,12 @@ package com.example.mobile_termproject.Acitivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import androidx.appcompat.widget.Toolbar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.FoodItemAdapter;
 import com.example.mobile_termproject.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -82,7 +74,7 @@ public class MainActivity extends BaseActivity {
         });
 
         // Firestore에서 데이터 불러오기 (선택 사항)
-        loadIngredientsFromFirestore();
+        //loadIngredientsFromFirestore();
     }
 
     @Override
