@@ -1,3 +1,5 @@
+1. [git 사용법](#git-branch-push-방법)
+
 # git branch push 방법
 
 ``` bach
@@ -32,7 +34,7 @@ git commit -m "커밋내용"
 git pull
 ```
 git에 업로드 하기 전, 레포지토리 최신버전 로드. 
-`중요` -> git 충돌 방지 -> 이래야 안번거로
+`중요` -> git 충돌 방지
 
 ```bash
 git push origin [브랜치 이름]
@@ -42,4 +44,7 @@ git push origin [브랜치 이름]
 `git push`일 시 자동적으로 기본 브랜치로 push.
 
 
-움
+# 변경사항 
+![Image](https://github.com/user-attachments/assets/dedd74f1-9526-42c1-8ef3-bcfbbce92789)
+
+앱 상단, 하단 바 `menu/ .xml` 로 처리.
