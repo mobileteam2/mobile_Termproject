@@ -23,30 +23,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private ListView lvFoods;
     private FoodItemAdapter adapter;
     private List<FoodItem> foodList;
-
-    private Button btnFridge, btnCommunity, btnRecipe, btnOther;
     private Button btnAddFood; // 추가 버튼
-
     private CollectionReference ingredientsRef;
-    private Toolbar toolbar;
-    private BottomNavigationView bottomNavigationView;
-
-    private String TAGBebbug = "DEBUG";
-
-    /**
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.top_menu_activity, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.menu_barcode) {
-                    Intent intent = new Intent(MainActivity.this, BarcodeAddActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), BarcodeAddActivity.class);
                     startActivity(intent);
                     return true;
                 } else if (item.getItemId() == R.id.menu_manual) {
@@ -102,36 +85,10 @@ public class MainActivity extends AppCompatActivity {
         loadIngredientsFromFirestore();
     }
 
-    private void setTopAndBottomBar(){
-        toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
-
-        bottomNavigationView = findViewById(R.id.bottomAppBar);
-
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int menuId = item.getItemId();
-                if(menuId == R.id.bottomBar_myRefri){
-                    // TODO: 내 냉장고 눌렀을 때 처리
-                    Log.d(TAGBebbug, "냉장고 클릭");
-                } else if(menuId == R.id.bottomBar_community){
-                    // TODO: 커뮤니티 눌렀을 때 처리
-                    Log.d(TAGBebbug, "커뮤니티 클릭");
-                } else if(menuId == R.id.bottomBar_recipe){
-                    // TODO: 레시피 추천 눌렀을 때 처리
-                    Log.d(TAGBebbug, "레시피 클릭");
-                } else if(menuId == R.id.bottomBar_others){
-                    // TODO: 기타 눌렀을 때 처리
-                    Log.d(TAGBebbug, "기타 클릭");
-                } else {
-                    Log.d(TAGBebbug, "그 외 경우");
-                }
-                return false;
-            }
-        });
+    @Override
+    protected void setTopAndBottomBar() {
+        super.setTopAndBottomBar();
     }
-
 
     private void loadIngredientsFromFirestore() {
         ingredientsRef.get().addOnSuccessListener(querySnapshot -> {

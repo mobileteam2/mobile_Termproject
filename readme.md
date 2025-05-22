@@ -2,7 +2,6 @@
 2. [변경 사항](#변경사항)
 3. [각 파일 설명](#파일-설명)
 
-
 # git branch push 방법
 
 ``` bach
@@ -53,7 +52,18 @@ git push
 ![Image](https://github.com/user-attachments/assets/dedd74f1-9526-42c1-8ef3-bcfbbce92789)
 
 앱 상단, 하단 바 `menu/ .xml` 로 처리.
+- - -
 
+- `BaseActivity` 생성. -> 모든 액티비티는 이 `BaseActivity`를 상속 받아야 함. -> 각 액티비티에서 따로 관리하는 것보다, 여기로 상속받게끔 하여 하나의 파일 수정으로 모든 액티비티 수정. (단, 각 액티비티가 공통으로 가질 기능만, 상단 바, 하단 바 설정 같은.)
+    - 클래스 내 포함 기능
+        - 상단 바, 하단 네비게이션 바 설정
+        - 그 외 공통 기능 추가 가능
+
+
+- `.xml` 파일 내에서 다음 한줄을 통해 상단 바, 하단 바 추가.
+`<include layout="@layout/layout_common_bar"/>`
+상단바, 하단 바 레이아웃은 `layout/layout_common_bar.xml`에서 관리, 아이템 아이콘 및 타이틀 등의 메타데이터는 각 `menu/ .xml`에서 관리.
+-> 수정 편의 목적.
 
 # 파일 설명
 - `server.py`:
