@@ -3,12 +3,18 @@ package com.example.mobile_termproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -21,10 +27,24 @@ public class MainActivity extends AppCompatActivity {
     private FoodItemAdapter adapter;
     private List<FoodItem> foodList;
 
-    private Button btnUserMenu, btnFridge, btnCommunity, btnRecipe, btnOther;
+    private Button btnFridge, btnCommunity, btnRecipe, btnOther;
     private Button btnAddFood; // 추가 버튼
 
     private CollectionReference ingredientsRef;
+    private Toolbar toolbar;
+    private BottomNavigationView bottomNavigationView;
+
+    private String TAGBebbug = "DEBUG";
+
+    /**
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_menu_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setTopAndBottomBar();
+
         lvFoods = findViewById(R.id.lvFoods);
 
         // 1) 테스트용 임시 데이터
@@ -51,30 +73,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new FoodItemAdapter(this, R.layout.item_food, foodList);
         lvFoods.setAdapter(adapter);
 
-        // 하단 버튼 바 바인딩
-        btnUserMenu  = findViewById(R.id.btnUserMenu);
-        btnFridge    = findViewById(R.id.btnFridge);
-        btnCommunity = findViewById(R.id.btnCommunity);
-        btnRecipe    = findViewById(R.id.btnRecipe);
-        btnOther     = findViewById(R.id.btnOther);
         btnAddFood   = findViewById(R.id.btnAddFood); // 추가 버튼도 바인딩
-
-        // 각 버튼 클릭 이벤트 설정
-        btnUserMenu.setOnClickListener(v -> {
-            // TODO: 사용자 메뉴 눌렀을 때 처리
-        });
-        btnFridge.setOnClickListener(v -> {
-            // TODO: 내 냉장고 눌렀을 때 처리
-        });
-        btnCommunity.setOnClickListener(v -> {
-            // TODO: 커뮤니티 눌렀을 때 처리
-        });
-        btnRecipe.setOnClickListener(v -> {
-            // TODO: 레시피 추천 눌렀을 때 처리
-        });
-        btnOther.setOnClickListener(v -> {
-            // TODO: 기타 눌렀을 때 처리
-        });
 
         // ★ 추가 버튼 클릭 시 팝업 메뉴 띄우기
         btnAddFood.setOnClickListener(view -> {
@@ -100,6 +99,37 @@ public class MainActivity extends AppCompatActivity {
         // Firestore에서 데이터 불러오기 (선택 사항)
         loadIngredientsFromFirestore();
     }
+
+    private void setTopAndBottomBar(){
+        toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+
+        bottomNavigationView = findViewById(R.id.bottomAppBar);
+
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int menuId = item.getItemId();
+                if(menuId == R.id.bottomBar_myRefri){
+                    // TODO: 내 냉장고 눌렀을 때 처리
+                    Log.d(TAGBebbug, "냉장고 클릭");
+                } else if(menuId == R.id.bottomBar_community){
+                    // TODO: 커뮤니티 눌렀을 때 처리
+                    Log.d(TAGBebbug, "커뮤니티 클릭");
+                } else if(menuId == R.id.bottomBar_recipe){
+                    // TODO: 레시피 추천 눌렀을 때 처리
+                    Log.d(TAGBebbug, "레시피 클릭");
+                } else if(menuId == R.id.bottomBar_others){
+                    // TODO: 기타 눌렀을 때 처리
+                    Log.d(TAGBebbug, "기타 클릭");
+                } else {
+                    Log.d(TAGBebbug, "그 외 경우");
+                }
+                return false;
+            }
+        });
+    }
+
 
     private void loadIngredientsFromFirestore() {
         ingredientsRef.get().addOnSuccessListener(querySnapshot -> {

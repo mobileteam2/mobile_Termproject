@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="냉장고"
+        android:id="@+id/bottomBar_myRefri"
+        android:icon="@android:drawable/ic_menu_gallery"
+         />
+    <item
+        android:title="커뮤니티"
+        android:id="@+id/bottomBar_community"
+        android:icon="@android:drawable/ic_menu_share"
+         />
+    <item
+        android:title="레시피 추천"
+        android:id="@+id/bottomBar_recipe"
+        android:icon="@android:drawable/ic_menu_compass"
+         />
+    <item
+        android:title="기타"
+        android:id="@+id/bottomBar_others"
+        android:icon="@android:drawable/ic_menu_help"
+         />
+</menu>
