@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobile_termproject.Data.FoodItem;
+
 import java.util.List;
 
 public class FoodItemAdapter extends ArrayAdapter<FoodItem> {

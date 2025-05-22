@@ -1,9 +1,10 @@
-package com.example.mobile_termproject;
+package com.example.mobile_termproject.Data;
 
 public class FoodItem {
     private String name;
     private String category;
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
+    private String docId;
 
     public FoodItem() {
         // Firebase 역직렬화용 기본 생성자
@@ -13,6 +14,12 @@ public class FoodItem {
         this.name = name;
         this.category = category;
         this.expiration = expiration;
+    }
+    public FoodItem(String name, String category, String expiration, String docId) {
+        this.name = name;
+        this.category = category;
+        this.expiration = expiration;
+        this.docId = docId;
     }
 
     // getter & setter

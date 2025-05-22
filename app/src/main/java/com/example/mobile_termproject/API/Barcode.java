@@ -1,4 +1,4 @@
-package com.example.mobile_termproject.Barcode;
+package com.example.mobile_termproject.API;
 
 import static com.example.mobile_termproject.API.ApiManager.clientId;
 import static com.example.mobile_termproject.API.ApiManager.clientSecret;
@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import com.example.mobile_termproject.API.ApiManager;
+
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;

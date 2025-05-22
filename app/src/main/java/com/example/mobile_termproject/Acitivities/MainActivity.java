@@ -1,4 +1,4 @@
-package com.example.mobile_termproject;
+package com.example.mobile_termproject.Acitivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.example.mobile_termproject.Data.FoodItem;
+import com.example.mobile_termproject.FoodItemAdapter;
+import com.example.mobile_termproject.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;

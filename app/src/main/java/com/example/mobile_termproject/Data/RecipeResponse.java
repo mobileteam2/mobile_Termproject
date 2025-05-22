@@ -1,4 +1,4 @@
-package com.example.mobile_termproject.Recipe;
+package com.example.mobile_termproject.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;

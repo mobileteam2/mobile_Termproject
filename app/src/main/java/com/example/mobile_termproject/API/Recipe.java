@@ -1,9 +1,10 @@
-package com.example.mobile_termproject.Recipe;
+package com.example.mobile_termproject.API;
 
 import static com.example.mobile_termproject.API.ApiManager.recipeAPI_KEY;
 
 import android.util.Log;
 
+import com.example.mobile_termproject.Data.RecipeResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
