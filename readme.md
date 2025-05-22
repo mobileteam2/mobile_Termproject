@@ -1,4 +1,5 @@
 1. [git 사용법](#git-branch-push-방법)
+2. [변경 사항](#변경사항)
 
 # git branch push 방법
 
