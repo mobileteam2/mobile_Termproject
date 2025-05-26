@@ -1,13 +1,25 @@
 package com.example.mobile_termproject.Acitivities;
 
+import android.app.NotificationManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.FoodItemAdapter;
+import com.example.mobile_termproject.Notification.NotificationListener;
 import com.example.mobile_termproject.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,6 +87,20 @@ public class MainActivity extends BaseActivity {
 
         // Firestore에서 데이터 불러오기 (선택 사항)
         //loadIngredientsFromFirestore();
+
+        // 알림 권한 확인 및 요청
+        if (!isNotificationPermissionGranted(this)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("알림 권한 필요")
+                    .setMessage("앱에서 기능을 사용하려면 알림 접근 권한이 필요합니다. 설정에서 권한을 켜주세요.")
+                    .setPositiveButton("설정으로 이동", ( dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("취소", null)
+                    .show();
+        }
+
     }
 
     @Override
@@ -96,5 +122,16 @@ public class MainActivity extends BaseActivity {
         }).addOnFailureListener(e -> {
             Log.e("Firestore", "불러오기 실패", e);
         });
+    }
+
+    // 알림 권한이 부여되었는지 확인
+    public static boolean isNotificationPermissionGranted(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            ComponentName componentName = new ComponentName(context, NotificationListener.class);
+            return notificationManager.isNotificationListenerAccessGranted(componentName);
+        } else {
+            return NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.getPackageName());
+        }
     }
 }

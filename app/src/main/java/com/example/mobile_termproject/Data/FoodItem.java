@@ -4,9 +4,12 @@ public class FoodItem {
     private String name;
     private String category;
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
+
+    private Expiration expirationc;
     private String docId;
 
     private String imageUrl;
+    private long timestamp;
 
     public FoodItem() {
         // Firebase 역직렬화용 기본 생성자
@@ -47,5 +50,21 @@ public class FoodItem {
     }
     public void setExpiration(String expiration) {
         this.expiration = expiration;
+    }
+
+    public Expiration getExpirationc() {
+        return expirationc;
+    }
+
+    public void setExpirationc(Expiration expirationc) {
+        this.expirationc = expirationc;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

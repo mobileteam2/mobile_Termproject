@@ -38,6 +38,7 @@ dependencies {
     implementation libs.firebase.firestore
     implementation libs.ext.junit
     implementation libs.firebase.storage
+    implementation libs.firebase.auth
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -50,4 +51,7 @@ dependencies {
 
     // Recipe Gson 반환용
     implementation libs.gson
+
+    // 네이버 쇼핑 api 사용을 위한 okhttp
+    implementation(libs.okhttp)
 }

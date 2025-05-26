@@ -13,6 +13,8 @@ googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.4"
 materialVersion = "1.11.0"
 firebaseStorage = "21.0.1"
+okhttp = "4.12.0"
+firebaseAuth = "23.2.0"
 
 [libraries]
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
@@ -27,6 +29,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 material-v1110 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version = "8.8.0" }
