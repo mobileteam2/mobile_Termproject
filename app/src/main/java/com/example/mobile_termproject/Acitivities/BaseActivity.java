@@ -1,5 +1,6 @@
 package com.example.mobile_termproject.Acitivities;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,8 +41,11 @@ public class BaseActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int menuId = item.getItemId();
                 if(menuId == R.id.bottomBar_myRefri){
-                    // TODO: 내 냉장고 눌렀을 때 처리
-                    Log.d(TAGdebug, "냉장고 클릭");
+                    if(!(BaseActivity.this instanceof MainActivity)) {
+                        // 현재 액티비티가 MainActivity가 아닌 경우에만 클릭 시 이동.
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        Log.d(TAGdebug, "냉장고 클릭");
+                    }
                 } else if(menuId == R.id.bottomBar_community){
                     // TODO: 커뮤니티 눌렀을 때 처리
                     Log.d(TAGdebug, "커뮤니티 클릭");

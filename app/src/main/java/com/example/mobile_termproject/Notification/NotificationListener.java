@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -12,8 +11,10 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.mobile_termproject.API.NaverAPI;
 import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
+import com.example.mobile_termproject.Data.NaverReturnResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -61,16 +62,15 @@ public class NotificationListener extends NotificationListenerService {
 
 
         // 네이버 API 활용하여 식재료명에서 카테고리 변환
-        NaverShoppingCategoryFetcher fetcher = new NaverShoppingCategoryFetcher();
-        fetcher.getCategories(ingredientName, new NaverShoppingCategoryFetcher.CategoryCallback() {
+        NaverAPI fetcher = new NaverAPI();
+        fetcher.getInfoNaver(ingredientName, new NaverAPI.NaverCallback() {
             @Override
-            public void onSuccess(NaverCategoryResult result) {
+            public void onSuccess(NaverReturnResult result) {
                 String category = result.getFinalCategory();
 
                 long timestamp = sbn.getPostTime();
                 // 유통기한 계산
                 Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(category, timestamp);
-
 
                 /*
 

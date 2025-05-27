@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.mobile_termproject.API.Barcode;
+import com.example.mobile_termproject.API.NaverAPI;
+import com.example.mobile_termproject.Data.NaverReturnResult;
 import com.example.mobile_termproject.R;
 
 
@@ -20,6 +22,7 @@ public class BarcodeAddActivity extends BaseActivity {
     Barcode barcode = new Barcode();
     Button btnCamera, btnSend;
     ImageView imgCamera;
+    NaverAPI api = new NaverAPI();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,23 @@ public class BarcodeAddActivity extends BaseActivity {
             public void onClick(View view) {
                 barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
                 btnCamera.setText("다시 찍기");
+
+                /*
+                Log.d(TAGdebug, "네이버 API 호출");
+                api.getInfoNaver("진라면", new NaverAPI.NaverCallback() {
+                    @Override
+                    public void onSuccess(NaverReturnResult result) {
+                        Log.d(TAGdebug, "name : " + result.name);
+                        Log.d(TAGdebug, "iamgeUrl : " + result.imageUrl);
+                        Log.d(TAGdebug, "category : " + result.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+                 */
             }
         });
 
@@ -59,7 +79,10 @@ public class BarcodeAddActivity extends BaseActivity {
                 public void onSuccess(String barcodeValue) {
                     Log.d(TAGdebug, "바코드 인식 성공: " + barcodeValue);
                     String result = barcode.getInfo(barcodeValue);
-                    Log.d(TAGdebug, "Naver API RESULT: \n" + result);
+                    Log.d(TAGdebug, "FOOD NAME: \n" + result);
+
+
+
                 }
                 @Override
                 public void onFailure(String errMsg) {
