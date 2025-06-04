@@ -1,5 +1,6 @@
 package com.example.mobile_termproject.Acitivities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -9,11 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.example.mobile_termproject.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class BaseActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected BottomNavigationView bottomNavigationView;
     public static final String TAGdebug = "DEBUG";
+
+    @SuppressLint("StaticFieldLeak")
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

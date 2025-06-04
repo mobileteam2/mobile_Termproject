@@ -17,6 +17,7 @@ import static com.example.mobile_termproject.API.ApiManager.CLIENT_SECRET;
 import static com.example.mobile_termproject.API.ApiManager.NAVER_BASE_URL;
 
 import com.example.mobile_termproject.Data.NaverReturnResult;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ import okhttp3.Response;
 
 public class NaverAPI {
     private final OkHttpClient client = new OkHttpClient();
+
 
     public interface NaverCallback {
         void onSuccess(NaverReturnResult result);
