@@ -34,6 +34,9 @@ public class BarcodeAddActivity extends BaseActivity {
     Button btnCamera, btnSend;
     ImageView imgCamera;
     NaverAPI api = new NaverAPI();
+    private String foodName = null;
+    private String barcodeValue = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,41 +45,21 @@ public class BarcodeAddActivity extends BaseActivity {
 
         imgCamera = findViewById(R.id.imgCamera);
         btnCamera = findViewById(R.id.btnCamera);
+        btnSend = findViewById(R.id.btnImageSend);
+
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
                 btnCamera.setText("다시 찍기");
-
-
-
-
             }
         });
 
-
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == barcode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            Log.d(TAGdebug, "사진 보내기 성공");
-
-            String imagePath = barcode.getPhotoFile().getAbsolutePath();
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
-            if (bitmap != null) {
-                imgCamera.setImageBitmap(bitmap);
-            } else {
-                Toast.makeText(this, "이미지를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
-            }
-            barcode.detectBarcode(imagePath, getApplicationContext(), new Barcode.BarcodeResultListner() {
-                @Override
-                public void onSuccess(String barcodeValue) {
-                    Log.d(TAGdebug, "바코드 인식 성공: " + barcodeValue);
-                    String foodName = barcode.getInfo(barcodeValue);
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(() -> {
+                    foodName = barcode.getInfo(barcodeValue);
                     Log.d(TAGdebug, "FOOD NAME: \n" + foodName);
 
                     Log.d(TAGdebug, "네이버 API 호출");
@@ -90,7 +73,6 @@ public class BarcodeAddActivity extends BaseActivity {
                             long timestamp = System.currentTimeMillis();
                             Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(result.toString(), timestamp);
 
-                            db = FirebaseFirestore.getInstance();
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String uid = user.getUid();
                             CollectionReference ingredientsRef = db.collection("users").document(uid).collection("ingredients");
@@ -123,7 +105,32 @@ public class BarcodeAddActivity extends BaseActivity {
 
                         }
                     });
+                }).start();
 
+            }
+        });
+        Log.d(TAGdebug,"btn load 완료");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == barcode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Log.d(TAGdebug, "사진 보내기 성공");
+
+            String imagePath = barcode.getPhotoFile().getAbsolutePath();
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+
+            if (bitmap != null) {
+                imgCamera.setImageBitmap(bitmap);
+            } else {
+                Toast.makeText(this, "이미지를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+            }
+            barcode.detectBarcode(imagePath, getApplicationContext(), new Barcode.BarcodeResultListner() {
+                @Override
+                public void onSuccess(String returnBarcodeValue) {
+                    barcodeValue = returnBarcodeValue;
+                    Log.d(TAGdebug, "바코드 인식 성공: " + barcodeValue);
                 }
                 @Override
                 public void onFailure(String errMsg) {

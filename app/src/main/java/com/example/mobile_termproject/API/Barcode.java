@@ -33,6 +33,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class Barcode {
     /*
     바코드 관련 helper 클래스.
@@ -162,16 +164,21 @@ public class Barcode {
 
     public String getInfo(String barcodeValue){
         String result = "";
+        String urlStr ="";
+        int responseCode = 0;
         try {
-            String urlStr = ApiManager.FLASKIP +  "/get_product_info?barcode=" + barcodeValue;
+            urlStr = ApiManager.FLASKIP + "/getInfo?barcode=" + barcodeValue;
             URL url = new URL(urlStr);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", "Android-App");
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-            int responseCode = connection.getResponseCode();
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+            responseCode = connection.getResponseCode();
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String returnStr = reader.readLine();
                 reader.close();
@@ -185,8 +192,11 @@ public class Barcode {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = "요청 실패: " + e.getMessage();
+            result = "요청 실패: " + e;
         }
+        Log.d(TAGDebug, "요청 URL: " + urlStr);
+        Log.d(TAGDebug, "응답 코드: " + responseCode);
+        Log.d(TAGDebug, "서버 응답 내용: " + result);
         return result;
     }
 
