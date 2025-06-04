@@ -75,8 +75,8 @@ public class MainActivity extends BaseActivity {
                     startActivity(intent);
                     return true;
                 } else if (item.getItemId() == R.id.menu_manual) {
-                    Intent intent = new Intent(MainActivity.this, ManualAddActivity.class);
-                    startActivity(intent);
+                    ManualAddActivity dialog = ManualAddActivity.newInstance();
+                    dialog.show(getSupportFragmentManager(), "ManualAddDialog");
                     return true;
                 }
                 return false;

@@ -1,75 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="#FFF0F0"
-    android:gravity="center_vertical">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/md_theme_light_surface"
+    app:cardUseCompatPadding="true">
 
-    <!-- 사진 자리 -->
-    <ImageView
-        android:id="@+id/imgFood"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
-        android:background="#AAAAAA"
-        android:contentDescription="사진자리" />
-
-    <!-- 이름 + 카테고리 + 유통기한 -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvFoodName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="푸드 아이템"
-            android:textSize="16sp"
-            android:textColor="#000000" />
+        <!-- 사진 -->
+        <ImageView
+            android:id="@+id/imgFood"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/md_theme_light_primaryContainer"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true" />
 
-        <!-- 🔹 추가된 카테고리 텍스트 -->
-        <TextView
-            android:id="@+id/tvCategory"
-            android:layout_width="wrap_content"
+        <!-- 텍스트 정보 -->
+        <LinearLayout
+            android:layout_width="145dp"
             android:layout_height="wrap_content"
-            android:text="카테고리 : 유제품"
-            android:textSize="14sp"
-            android:textColor="#444444" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvExpirationDate"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvFoodName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="푸드 아이템"
+                android:textColor="@color/md_theme_light_onSurface"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="카테고리 : 유제품"
+                android:textColor="@color/md_theme_light_onSurface"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvExpirationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="유통기한 : 2025-05-15"
+                android:textColor="@color/md_theme_light_onSurface"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- 수정 버튼 -->
+
+        <!-- 삭제 버튼 -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEdit"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="68dp"
             android:layout_height="wrap_content"
-            android:text="유통기한 : 2025-05-15"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:layout_marginEnd="4dp"
+            android:text="수정"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:cornerRadius="8dp"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDelete"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="69dp"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:cornerRadius="8dp"
+            app:strokeWidth="1dp" />
     </LinearLayout>
-
-    <!-- 수정 버튼 -->
-
-    <!-- 삭제 버튼 -->
-
-    <Button
-        android:id="@+id/btnEdit"
-        android:layout_width="53dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#FFCCCC"
-        android:text="수정"
-        android:textColor="#000000"
-        android:textSize="10dp"
-        />
-
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="53dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#FFCCCC"
-        android:text="삭제"
-        android:textColor="#000000"
-        android:textSize="10sp" />
-</LinearLayout>
+</androidx.cardview.widget.CardView>
