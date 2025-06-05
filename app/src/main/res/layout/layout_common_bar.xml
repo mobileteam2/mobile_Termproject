@@ -20,12 +20,14 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/plus_jakarta_sans_bold"
             app:title="@string/app_name"
             app:titleCentered="true"
-            app:titleTextColor="@color/md_theme_light_onPrimary"
-            app:navigationIconTint="@color/md_theme_light_onPrimary"
-            app:popupTheme="@style/ThemeOverlay.Material3.Light"/>
+            app:titleTextColor="@android:color/black"
+            app:navigationIconTint="@android:color/black"
+            app:popupTheme="@style/ThemeOverlay.Material3.Light"
+            />
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- 하단 바 -->

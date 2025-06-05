@@ -37,10 +37,10 @@ public class LoginActivity extends AppCompatActivity {
             loginUser(email, password);
         });
 
+        // 회원가입 버튼 클릭 시
         buttonRegister.setOnClickListener(v -> {
-            String email = editTextEmail.getText().toString().trim();
-            String password = editTextPassword.getText().toString().trim();
-            registerUser(email, password);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -53,19 +53,6 @@ public class LoginActivity extends AppCompatActivity {
                         goToMain();
                     } else {
                         Toast.makeText(this, "로그인 실패: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void registerUser(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(this, "회원가입 성공: " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                        //goToMain();
-                    } else {
-                        Toast.makeText(this, "회원가입 실패: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

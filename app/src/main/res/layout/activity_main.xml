@@ -15,37 +15,57 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnAddFood"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="4dp"
-            android:text="추가"
-            android:textColor="@android:color/white" />
-
-        <!-- ③ 카드뷰와 리스트 -->
+        <!-- ③ 카드뷰
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContainer"
-            android:layout_width="345dp"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             app:cardUseCompatPadding="true"
-            android:layout_gravity="center"
+            app:cardBackgroundColor="@android:color/transparent"
             >
-
-            <ListView
-                android:id="@+id/lvFoods"
-                android:layout_width="398dp"
-                android:layout_height="wrap_content"
-                android:divider="@android:color/darker_gray"
-                android:dividerHeight="1dp" />
         </androidx.cardview.widget.CardView>
+        -->
+        <ListView
+            android:id="@+id/lvFoods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            android:divider="@android:color/darker_gray" />
+
     </LinearLayout>
+
+    <!-- 버튼 위치, 디자인 수정 -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:text="Add Item"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/plus_jakarta_sans_bold"
+
+
+        app:icon="@drawable/add"
+        app:iconTint="@color/white"
+        app:iconSize="24dp"
+
+        app:backgroundTint="#369EFF"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/FabPillShape"/>
+
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

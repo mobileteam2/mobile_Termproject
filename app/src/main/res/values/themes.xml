@@ -2,6 +2,9 @@
 
     <!-- 기본 앱 테마 -->
     <style name="Theme.Mobile_termproject" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Add font -->
+        <item name="android:fontFamily">@font/plus_jakarta_sans_bold</item>
+
         <!-- Primary brand color -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
@@ -20,6 +23,14 @@
         <!-- Status bar / Navigation bar -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <item name="android:navigationBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+
+        <!-- 포커스 색상 지정 -->
+        <item name="colorControlActivated">#369EFF</item>
+        <item name="hintTextColor">#369EFF</item>
     </style>
 
+    <!-- round -->
+    <style name="FabPillShape" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
