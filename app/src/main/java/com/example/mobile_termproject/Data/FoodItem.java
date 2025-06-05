@@ -6,7 +6,7 @@ public class FoodItem {
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
 
     private Expiration expirationc;
-    private String docId;
+    private String id;
 
     private String imageUrl;
     private long timestamp;
@@ -26,7 +26,7 @@ public class FoodItem {
         this.name = name;
         this.category = category;
         this.expiration = expiration;
-        this.docId = docId;
+        this.id = docId;
         this.imageUrl = imageUrl;
     }
 
@@ -70,4 +70,6 @@ public class FoodItem {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getId(){ return id; }
 }

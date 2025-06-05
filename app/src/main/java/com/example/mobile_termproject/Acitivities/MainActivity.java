@@ -4,21 +4,18 @@ import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.mobile_termproject.Data.FoodItem;
-import com.example.mobile_termproject.FoodItemAdapter;
+import com.example.mobile_termproject.Data.FoodItemAdapter;
 import com.example.mobile_termproject.Notification.NotificationListener;
 import com.example.mobile_termproject.R;
 
@@ -36,15 +33,13 @@ public class MainActivity extends BaseActivity {
 
     private ListView lvFoods;
     private FoodItemAdapter adapter;
-    private List<FoodItem> foodList;
+    public static List<FoodItem> foodList = new ArrayList<>();
     private ExtendedFloatingActionButton btnAddFood; // 추가 버튼
     private CollectionReference ingredientsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // ★ Firestore 경로 설정 (하드코딩된 UID 사용)
-        db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         ingredientsRef = db.collection("users")
                 .document(uid)
@@ -59,14 +54,17 @@ public class MainActivity extends BaseActivity {
 
         lvFoods = findViewById(R.id.lvFoods);
 
-        // 1) 테스트용 임시 데이터
-        foodList = new ArrayList<>();
-        foodList.add(new FoodItem("사과", "과일", "2025.06.01"));
-        foodList.add(new FoodItem("우유", "유제품", "2025.05.20"));
-        foodList.add(new FoodItem("당근", "채소", "2025.06.10"));
 
         // 2) 어댑터 생성 및 연결
-        adapter = new FoodItemAdapter(this, R.layout.item_food, foodList);
+        adapter = new FoodItemAdapter(this, R.layout.item_food, foodList, position -> {
+            FoodItem item = foodList.get(position);
+            ItemEditActivity dialog = ItemEditActivity.newInstance(item.getId(), position);
+            dialog.setOnItemEditCompleteListener(() -> {
+                adapter.notifyDataSetChanged();
+            });
+
+            dialog.show(getSupportFragmentManager(), "ItemEditDialog");
+        });
         lvFoods.setAdapter(adapter);
 
         btnAddFood = findViewById(R.id.fab_add_item); // 추가 버튼도 바인딩
@@ -93,7 +91,7 @@ public class MainActivity extends BaseActivity {
         });
 
         // Firestore에서 데이터 불러오기 (선택 사항)
-        //loadIngredientsFromFirestore();
+        loadIngredientsFromFirestore();
 
         // 알림 권한 확인 및 요청
         if (!isNotificationPermissionGranted(this)) {
@@ -107,8 +105,9 @@ public class MainActivity extends BaseActivity {
                     .setNegativeButton("취소", null)
                     .show();
         }
-
     }
+
+
 
     @Override
     protected void setTopAndBottomBar() {
@@ -117,13 +116,15 @@ public class MainActivity extends BaseActivity {
 
     private void loadIngredientsFromFirestore() {
         ingredientsRef.get().addOnSuccessListener(querySnapshot -> {
-            foodList.clear();
+            if(!foodList.isEmpty()){
+                foodList.clear();
+            }
             for (var doc : querySnapshot) {
-                String name = doc.getString("제품명");
-                String category = doc.getString("카테고리");
-                String expiration = doc.getString("기한");  // 예시: 기한 필드명
-
-                foodList.add(new FoodItem(name, category, expiration));
+                String name = doc.getString("name");
+                String category = doc.getString("category");
+                String expiration = doc.getString("expiration");  // 예시: 기한 필드명
+                String id = doc.getId();
+                foodList.add(new FoodItem(name, category, expiration, id));
             }
             adapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {

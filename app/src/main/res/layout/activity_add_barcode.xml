@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/md_theme_light_background"
-    tools:context=".Activities.BarcodeAddActivity">
+    tools:context=".Acitivities.BarcodeAddActivity">
 
     <!-- 상단 바 -->
     <include
@@ -20,8 +20,8 @@
     <!-- 본문 영역 -->
     <LinearLayout
         android:id="@+id/barcodeContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="24dp"
         android:gravity="center"
@@ -35,7 +35,7 @@
             android:id="@+id/btnCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="카메라"
+            android:text="@string/add_barcode_activity_camera_btn"
             style="?attr/materialButtonOutlinedStyle"
             app:cornerRadius="12dp"
             app:strokeWidth="1dp"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="사진보내기"
+            android:text="@string/add_barcode_activity_send_btn"
             style="?attr/materialButtonOutlinedStyle"
             app:cornerRadius="12dp"
             android:textAllCaps="false" />

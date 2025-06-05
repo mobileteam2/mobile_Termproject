@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/topBar_userMenu"
-        android:title="사용자 메뉴"
+        android:title="@string/top_user_menu"
         app:showAsAction="ifRoom"
         />
 </menu>

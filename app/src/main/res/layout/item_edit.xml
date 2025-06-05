@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/md_theme_light_background"
     android:padding="24dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal">
-
-        <!-- 상단 타이틀 -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menual_add_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/md_theme_light_onSurface"
-            android:gravity="center"
-            android:paddingBottom="16dp" />
-
-        <!-- 이미지 업로드 버튼 -->
         <ImageButton
             android:id="@+id/imgIngredient"
             android:layout_width="100dp"
@@ -35,7 +21,17 @@
             android:scaleType="centerCrop"
             android:contentDescription="이미지 추가" />
 
-        <!-- 식재료 이름 입력 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="수정"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_light_onSurface"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +44,6 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 유통기한 입력 -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +56,6 @@
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 카테고리 Spinner -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,7 +69,6 @@
                 android:padding="48dp" />
         </androidx.cardview.widget.CardView>
 
-        <!-- 메모 입력 -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,15 +82,33 @@
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 추가 버튼 -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAdd"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="추가"
-            android:textAllCaps="false"
-            app:cornerRadius="12dp"
-            android:layout_marginTop="24dp"
-            style="?attr/materialButtonOutlinedStyle" />
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="추가"
+                android:textAllCaps="false"
+                app:cornerRadius="12dp"
+                android:layout_marginTop="24dp"
+                style="?attr/materialButtonOutlinedStyle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="취소"
+                android:textAllCaps="false"
+                app:cornerRadius="12dp"
+                android:layout_marginTop="24dp"
+                style="?attr/materialButtonOutlinedStyle" />
+        </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>

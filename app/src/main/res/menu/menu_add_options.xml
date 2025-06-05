@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_barcode"
-        android:title="바코드 추가" />
+        android:title="@string/extra_menu_barcode_add_btn" />
     <item
         android:id="@+id/menu_manual"
-        android:title="직접 추가" />
+        android:title="@string/extra_menu_personal_add_btn" />
 </menu>

@@ -51,7 +51,7 @@ public class BarcodeAddActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
-                btnCamera.setText("다시 찍기");
+                btnCamera.setText(R.string.add_barcode_activity_resend_btn);
             }
         });
 
