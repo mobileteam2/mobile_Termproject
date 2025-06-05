@@ -87,6 +87,7 @@ public class BarcodeAddActivity extends BaseActivity {
                                     expirationResult.get("실온")
                             ));
                             foodItem.setTimestamp(timestamp);
+                            foodItem.setImageUrl(result.imageUrl);
 
                             ingredientsRef.add(foodItem)
                                     .addOnSuccessListener(documentReference -> {
