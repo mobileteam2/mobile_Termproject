@@ -21,8 +21,11 @@ import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.FoodItemAdapter;
 import com.example.mobile_termproject.Notification.NotificationListener;
 import com.example.mobile_termproject.R;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -34,7 +37,7 @@ public class MainActivity extends BaseActivity {
     private ListView lvFoods;
     private FoodItemAdapter adapter;
     private List<FoodItem> foodList;
-    private Button btnAddFood; // 추가 버튼
+    private ExtendedFloatingActionButton btnAddFood; // 추가 버튼
     private CollectionReference ingredientsRef;
 
     @Override
@@ -58,15 +61,15 @@ public class MainActivity extends BaseActivity {
 
         // 1) 테스트용 임시 데이터
         foodList = new ArrayList<>();
-        foodList.add(new FoodItem("사과", "과일", "2025-06-01"));
-        foodList.add(new FoodItem("우유", "유제품", "2025-05-20"));
-        foodList.add(new FoodItem("당근", "채소", "2025-06-10"));
+        foodList.add(new FoodItem("사과", "과일", "2025.06.01"));
+        foodList.add(new FoodItem("우유", "유제품", "2025.05.20"));
+        foodList.add(new FoodItem("당근", "채소", "2025.06.10"));
 
         // 2) 어댑터 생성 및 연결
         adapter = new FoodItemAdapter(this, R.layout.item_food, foodList);
         lvFoods.setAdapter(adapter);
 
-        btnAddFood   = findViewById(R.id.btnAddFood); // 추가 버튼도 바인딩
+        btnAddFood = findViewById(R.id.fab_add_item); // 추가 버튼도 바인딩
 
         // ★ 추가 버튼 클릭 시 팝업 메뉴 띄우기
         btnAddFood.setOnClickListener(view -> {
@@ -79,8 +82,8 @@ public class MainActivity extends BaseActivity {
                     startActivity(intent);
                     return true;
                 } else if (item.getItemId() == R.id.menu_manual) {
-                    Intent intent = new Intent(MainActivity.this, ManualAddActivity.class);
-                    startActivity(intent);
+                    ManualAddActivity dialog = ManualAddActivity.newInstance();
+                    dialog.show(getSupportFragmentManager(), "ManualAddDialog");
                     return true;
                 }
                 return false;

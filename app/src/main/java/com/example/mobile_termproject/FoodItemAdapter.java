@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,13 +60,13 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         TextView tvCategory = v.findViewById(R.id.tvCategory);   // 카테고리
         TextView tvExpiration = v.findViewById(R.id.tvExpirationDate); // 유통기한
 
-        Button btnEdit  = v.findViewById(R.id.btnEdit);
-        Button btnDelete= v.findViewById(R.id.btnDelete);
+        ImageButton btnEdit  = v.findViewById(R.id.btnEdit);
+        ImageButton btnDelete= v.findViewById(R.id.btnDelete);
 
         // 🔽 실제 값 적용
         tvName.setText(item.getName());
-        tvCategory.setText("카테고리: " + item.getCategory());
-        tvExpiration.setText("유통기한: " + item.getExpiration());
+        tvCategory.setText(item.getCategory());
+        tvExpiration.setText(item.getExpiration() + "까지");
 
         // 🔽 예시 버튼 동작
         btnEdit.setOnClickListener(view ->

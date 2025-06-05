@@ -1,92 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@android:color/white">
+    android:background="@color/md_theme_light_background"
+    android:padding="24dp">
 
-    <!-- 상단 타이틀 -->
-    <TextView
-        android:id="@+id/tvTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="식재료 추가"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="12dp"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
+        <!-- 상단 타이틀 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="식재료 추가"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_light_onSurface"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
 
-    <!-- 이미지 업로드 -->
-    <ImageButton
-        android:id="@+id/imgIngredient"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="이미지 추가"
-        android:focusable="true"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_camera" />
+        <!-- 이미지 업로드 버튼 -->
+        <ImageButton
+            android:id="@+id/imgIngredient"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_menu_camera"
+            android:scaleType="centerCrop"
+            android:contentDescription="이미지 추가" />
 
+        <!-- 식재료 이름 입력 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="식재료 이름을 입력하세요."
+            android:layout_marginTop="24dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- 이름 -->
-    <EditText
-        android:id="@+id/etName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="식재료 이름을 입력하세요."
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:inputType="text"
-        android:layout_marginTop="16dp" />
+        <!-- 유통기한 입력 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="유통기한 0000-00-00"
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etExpiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- 유통기한 선택 (TextView를 눌러 DatePicker 연결 예정) -->
-    <EditText
-        android:id="@+id/etExpiration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="유통기한 0000-00-00"
-        android:inputType="date"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        />
+        <!-- 카테고리 Spinner -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="48dp" />
+        </androidx.cardview.widget.CardView>
 
+        <!-- 메모 입력 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="메모를 입력하세요."
+            android:layout_marginTop="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMemo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- 카테고리 선택 Spinner -->
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:layout_marginTop="16dp" />
-
-    <!-- 메모 입력 -->
-    <EditText
-        android:id="@+id/etMemo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="메모를 입력하세요."
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:inputType="textMultiLine"
-        android:minLines="2"
-        android:layout_marginTop="16dp" />
-
-    <!-- 추가 버튼 -->
-    <Button
-        android:id="@+id/btnAdd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:layout_marginTop="24dp"
-        android:text="추가"
-        android:backgroundTint="#000000"
-        android:textColor="@android:color/white"/>
-
-</LinearLayout>
+        <!-- 추가 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="추가"
+            android:textAllCaps="false"
+            app:cornerRadius="12dp"
+            android:layout_marginTop="24dp"
+            style="?attr/materialButtonOutlinedStyle" />
+    </LinearLayout>
+</ScrollView>

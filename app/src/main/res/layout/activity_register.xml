@@ -8,75 +8,92 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@color/md_theme_light_background"
-    tools:context=".Authentication.LoginActivity">
+    tools:context=".Authentication.RegisterActivity">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/loginForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="24dp"
+            android:layout_gravity="center">
 
-            <!-- 이메일 입력 -->
+            <!-- 이메일 -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="이메일"
-                app:boxBackgroundMode="outline"
                 app:boxStrokeColor="#369EFF"
-                app:hintTextColor="#369EFF">
+                app:hintTextColor="#369EFF"
+                app:boxBackgroundMode="outline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- 비밀번호 입력 -->
+            <!-- 비밀번호 -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:hint="비밀번호"
-                app:boxBackgroundMode="outline"
+                android:layout_marginTop="12dp"
                 app:boxStrokeColor="#369EFF"
-                app:hintTextColor="#369EFF">
+                app:hintTextColor="#369EFF"
+                app:boxBackgroundMode="outline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- 로그인 버튼 -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonLogin"
+            <!-- 비밀번호 확인 -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="로그인"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                app:backgroundTint="#369EFF"
-                app:cornerRadius="12dp" />
+                android:hint="비밀번호 확인"
+                android:layout_marginTop="12dp"
+                app:boxStrokeColor="#369EFF"
+                app:hintTextColor="#369EFF"
+                app:boxBackgroundMode="outline">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- 회원가입 버튼 -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="회원가입"
+                android:layout_marginTop="24dp"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#369EFF"
+                android:textAllCaps="false"/>
+
+            <!-- 취소 버튼 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="취소"
+                android:layout_marginTop="8dp"
                 android:textAllCaps="false"
-                android:textColor="#369EFF"
-                app:backgroundTint="@android:color/transparent"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:textColor="#999999"
+                app:backgroundTint="#eeeeee"/>
         </LinearLayout>
     </FrameLayout>
 </ScrollView>
