@@ -6,6 +6,8 @@ public class FoodItem {
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
 
     private Expiration expirationc;
+
+    private String storagetype;
     private String docId;
 
     private String imageUrl;
@@ -66,5 +68,13 @@ public class FoodItem {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getStoragetype() {
+        return storagetype;
+    }
+
+    public void setStoragetype(String storagetype) {
+        this.storagetype = storagetype;
     }
 }

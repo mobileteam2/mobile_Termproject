@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="md_theme_light_primary">#4FC3F7</color>       <!-- 하늘색 -->
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>     <!-- 버튼 텍스트 등 -->
+    <color name="md_theme_light_secondary">#81D4FA</color>     <!-- 연한 하늘색 (보조) -->
+    <color name="md_theme_light_background">#FFFFFF</color>    <!-- 전체 배경 -->
+    <color name="md_theme_light_onBackground">#333333</color>  <!-- 텍스트 -->
+    <color name="md_theme_light_onSurfaceVariant">#49454F</color> <!-- 예시 색상 -->
+    <color name="md_theme_light_surface">#FFFBFE</color> <!-- Material3 표준 표면색 -->
+
 </resources>

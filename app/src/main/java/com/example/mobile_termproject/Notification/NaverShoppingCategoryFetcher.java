@@ -1,5 +1,7 @@
 package com.example.mobile_termproject.Notification;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,6 +43,8 @@ public class NaverShoppingCategoryFetcher {
     private final String CLIENT_SECRET = "P090ouj2Xu";
     private final OkHttpClient client = new OkHttpClient();
 
+    private static final String TAG = "NaverShoppingCategoryFetcher";
+
     public interface CategoryCallback {
         void onSuccess(NaverCategoryResult result);
         void onFailure(Exception e);
@@ -56,7 +60,7 @@ public class NaverShoppingCategoryFetcher {
                     .addHeader("X-Naver-Client-Id", CLIENT_ID)
                     .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
                     .build();
-
+            Log.d(TAG, "쿼리: " + query);
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

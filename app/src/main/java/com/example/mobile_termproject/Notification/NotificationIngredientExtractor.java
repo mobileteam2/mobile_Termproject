@@ -21,7 +21,9 @@ public class NotificationIngredientExtractor {
 
             case "net.bucketplace": // 오늘의집
                 return extractFromBucketplace(text);
-
+                
+            case "com.example.myapplication": // 테스트 앱
+                return extractFromNaver(title, text, bigText);
             default:
                 return ""; // 또는 "기타"
         }
