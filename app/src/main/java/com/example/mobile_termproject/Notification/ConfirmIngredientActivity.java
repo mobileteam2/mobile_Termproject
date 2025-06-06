@@ -20,6 +20,9 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+
 public class ConfirmIngredientActivity extends AppCompatActivity {
     private FoodItem foodItem;
     private String selectedStorageType = null;
@@ -43,6 +46,7 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         String room = getIntent().getStringExtra("room");
         String imageUrl = getIntent().getStringExtra("imageUrl");
         long timestamp = getIntent().getLongExtra("timestamp", 0);
+        String imgUrl = getIntent().getStringExtra("imgUrl");
 
         if (name == null || category == null || frozen == null || refrigerated == null || room == null) {
             Toast.makeText(this, "식재료 정보 전달 실패", Toast.LENGTH_SHORT).show();
@@ -56,6 +60,7 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         foodItem.setCategory(category);
         foodItem.setExpirationc(new Expiration(frozen, refrigerated, room));
         foodItem.setTimestamp(timestamp);
+        foodItem.setImageUrl(imgUrl);
 
         // 레이아웃 요소 연결
         TextView nameText = findViewById(R.id.ingredientNameValue);
@@ -63,6 +68,18 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         TextView roomDate = findViewById(R.id.textRoomDate);
         TextView refrigeratedDate = findViewById(R.id.textRefrigeratedDate);
         TextView frozenDate = findViewById(R.id.textFrozenDate);
+        ImageView imageThumbnail = findViewById(R.id.imageThumbnail);
+
+        // 이미지 URL이 유효한 경우에만 로드
+        if (imgUrl != null && !imgUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(imgUrl)
+                    .placeholder(R.drawable.loading) // 로딩 중 표시할 기본 이미지
+                    .error(R.drawable.error)       // 실패 시 표시할 이미지
+                    .into(imageThumbnail);
+        } else {
+            imageThumbnail.setImageResource(R.drawable.error);
+        }
 
         MaterialCardView cardRoom = findViewById(R.id.cardRoom);
         MaterialCardView cardRefrigerated = findViewById(R.id.cardRefrigerated);

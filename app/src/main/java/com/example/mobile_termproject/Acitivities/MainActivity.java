@@ -136,6 +136,7 @@ public class MainActivity extends BaseActivity {
                 String expiration = doc.getString("expiration");  // 예시: 기한 필드명
                 String imageUrl = doc.getString("imageUrl");
                 String id = doc.getId();
+
                 foodList.add(new FoodItem(name, category, expiration, id, imageUrl));
             }
             adapter.notifyDataSetChanged();

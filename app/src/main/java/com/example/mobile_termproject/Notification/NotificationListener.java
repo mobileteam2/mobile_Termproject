@@ -18,13 +18,6 @@ import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.Data.NaverReturnResult;
 import com.example.mobile_termproject.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Collections;
-import java.util.Map;
 
 public class NotificationListener extends NotificationListenerService {
 
@@ -74,9 +67,9 @@ public class NotificationListener extends NotificationListenerService {
             @Override
             public void onSuccess(NaverReturnResult result) {
                 String category = result.getFinalCategory();
+                Log.d(TAG, "카테고리 추출 성공 : " + result.getFinalCategory());
                 long timestamp = sbn.getPostTime();
 
-                Log.d(TAG, "카테고리 추출 성공 : " + result.getFinalCategory());
                 ExpirationCalculator.calculateExpirationDates(category, timestamp, r -> {
                     // FoodItem 임시 생성
                     FoodItem foodItem = new FoodItem();
@@ -88,6 +81,7 @@ public class NotificationListener extends NotificationListenerService {
                             r.get("실온")
                     ));
                     foodItem.setTimestamp(timestamp);
+                    foodItem.setImageUrl(result.getImageUrl());
                     // 사용자에게 앱 알림 발송 (FoodItem 객체를 intent로 전달)
                     sendUserNotification(foodItem);
                     Log.d(TAG, "앱 알림 발송 : " + r.get("실온") + " / " + r.get("냉장") + " / " + r.get("냉동"));
@@ -102,7 +96,6 @@ public class NotificationListener extends NotificationListenerService {
 
     public void sendUserNotification(FoodItem item) {
         Log.d(TAG, "발송 전 확인 : " + item.getExpirationc().getRoom() + " / " + item.getExpirationc().getRefrigerated() + " / " + item.getExpirationc().getFrozen());
-
         Intent intent = new Intent(this, ConfirmIngredientActivity.class);
         intent.putExtra("name", item.getName());
         intent.putExtra("category", item.getCategory());
@@ -110,9 +103,10 @@ public class NotificationListener extends NotificationListenerService {
         intent.putExtra("refrigerated", item.getExpirationc().getRefrigerated());
         intent.putExtra("room", item.getExpirationc().getRoom());
         intent.putExtra("timestamp", item.getTimestamp());
+        intent.putExtra("imgUrl", item.getImageUrl());
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "confirm_channel")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -153,15 +147,15 @@ public class NotificationListener extends NotificationListenerService {
 
         // Android 8.0 이상은 채널 생성 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (manager.getNotificationChannel("confirm_channel") == null) {
-                NotificationChannel channel = new NotificationChannel("confirm_channel", "식재료 확인", NotificationManager.IMPORTANCE_HIGH);
+            if (manager.getNotificationChannel("disconnect_channel") == null) {
+                NotificationChannel channel = new NotificationChannel("disconnect_channel", "알림 서비스 상태", NotificationManager.IMPORTANCE_HIGH);
                 manager.createNotificationChannel(channel);
             }
         }
 
-
         manager.notify(1001, builder.build());
     }
+
 
 
 }

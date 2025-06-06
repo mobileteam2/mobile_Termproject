@@ -21,6 +21,8 @@ import com.example.mobile_termproject.Acitivities.BarcodeAddActivity;
 import com.example.mobile_termproject.Acitivities.ManualAddActivity;
 import com.example.mobile_termproject.R;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
@@ -101,6 +103,17 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
                     .into(tvImage);
         }
 
+
+        // 이미지 URL이 있을 때 Glide로 로딩
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Glide.with(mContext)
+                    .load(item.getImageUrl())
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                    .into(tvImage);
+        } else {
+            tvImage.setImageResource(R.drawable.error);
+        }
 
         //수정 버튼
         btnEdit.setOnClickListener(view -> {
