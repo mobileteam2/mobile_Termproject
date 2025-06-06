@@ -40,6 +40,7 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         String refrigerated = getIntent().getStringExtra("refrigerated");
         String room = getIntent().getStringExtra("room");
         long timestamp = getIntent().getLongExtra("timestamp", 0);
+        String imgUrl = getIntent().getStringExtra("imgUrl");
 
         if (name == null || category == null || frozen == null || refrigerated == null || room == null) {
             Toast.makeText(this, "식재료 정보 전달 실패", Toast.LENGTH_SHORT).show();

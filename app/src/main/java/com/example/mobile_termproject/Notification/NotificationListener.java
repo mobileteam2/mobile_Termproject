@@ -88,6 +88,7 @@ public class NotificationListener extends NotificationListenerService {
         FoodItem item = new FoodItem();
         String ingredientName = result.getName();
         String category = result.getFinalCategory();
+        String imgUrl = result.getImageUrl();
         Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(category, timestamp);
         item.setName(ingredientName);
         item.setCategory(category);
@@ -104,6 +105,7 @@ public class NotificationListener extends NotificationListenerService {
         intent.putExtra("refrigerated", item.getExpirationc().getRefrigerated());
         intent.putExtra("room", item.getExpirationc().getRoom());
         intent.putExtra("timestamp", timestamp);
+        intent.putExtra("imgUrl", imgUrl);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
