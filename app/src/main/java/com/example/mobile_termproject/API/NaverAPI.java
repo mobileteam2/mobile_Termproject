@@ -1,10 +1,23 @@
-package com.example.mobile_termproject.Notification;
+package com.example.mobile_termproject.API;
+
+
+/*
+NaverAPI 통합 클래스
+
+Barcode:
+    식품 이름 전달 ->
+    NAVER API 로 전달 ->
+    결과값 반환 : 식품 이름, 이미지, 카테고리 ->
+
+    DB에 저장 ->
+ */
 
 import static com.example.mobile_termproject.API.ApiManager.CLIENT_ID;
 import static com.example.mobile_termproject.API.ApiManager.CLIENT_SECRET;
 import static com.example.mobile_termproject.API.ApiManager.NAVER_BASE_URL;
 
 import com.example.mobile_termproject.Data.NaverReturnResult;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,47 +31,25 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/*
-
-        사용법
-
-        NaverShoppingCategoryFetcher fetcher = new NaverShoppingCategoryFetcher();
-        fetcher.getCategories("우유", new NaverShoppingCategoryFetcher.CategoryCallback() {
-        @Override
-        public void onSuccess(NaverCategoryResult result) {
-
-            여기에 result를 활용하는 코드 기입
-
-            Log.d("Category", result.toString());
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Log.e("CategoryError", e.getMessage());
-        }
-});
-*/
-
-public class NaverShoppingCategoryFetcher {
-
+public class NaverAPI {
     private final OkHttpClient client = new OkHttpClient();
 
-    public interface CategoryCallback {
+
+    public interface NaverCallback {
         void onSuccess(NaverReturnResult result);
         void onFailure(Exception e);
     }
 
-    public void getCategories(String query, CategoryCallback callback) {
+    public void getInfoNaver(String foodName, NaverCallback callback){
         try {
-            String encodedQuery = URLEncoder.encode(query, "UTF-8");
-            String apiUrl = NAVER_BASE_URL + encodedQuery;
+            String encodedFoodName = URLEncoder.encode(foodName, "UTF-8");
+            String apiUrl = NAVER_BASE_URL + encodedFoodName;
 
             Request request = new Request.Builder()
                     .url(apiUrl)
                     .addHeader("X-Naver-Client-Id", CLIENT_ID)
                     .addHeader("X-Naver-Client-Secret", CLIENT_SECRET)
                     .build();
-
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -75,30 +66,38 @@ public class NaverShoppingCategoryFetcher {
                     try {
                         JSONObject json = new JSONObject(response.body().string());
                         JSONArray items = json.getJSONArray("items");
+
                         if (items.length() == 0) {
                             callback.onFailure(new Exception("검색 결과 없음"));
                             return;
                         }
 
-                        JSONObject first = items.getJSONObject(0);
+                        JSONObject item = items.getJSONObject(0);
+                        String name = item.optString("title", "").replaceAll("<[^>]*>", "");
+                        String image = item.optString("image", "");
+                        String category1 = item.optString("category1", "");
+                        String category2 = item.optString("category2", "");
+                        String category3 = item.optString("category3", "");
+                        String category4 = item.optString("category4", "");
+
+                        // 필요한 데이터 객체 생성
                         NaverReturnResult result = new NaverReturnResult(
-                                query,
-                                first.optString("image", ""),
-                                first.optString("category1", ""),
-                                first.optString("category2", ""),
-                                first.optString("category3", ""),
-                                first.optString("category4", "")
+                                name, image,
+                                category1, category2, category3, category4
                         );
+
+                        // 성공 콜백
                         callback.onSuccess(result);
+
                     } catch (Exception e) {
                         callback.onFailure(e);
                     }
                 }
             });
-
         } catch (Exception e) {
             callback.onFailure(e);
         }
     }
-}
 
+
+}

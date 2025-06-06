@@ -21,6 +21,10 @@ import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.FoodItemAdapter;
 import com.example.mobile_termproject.Notification.NotificationListener;
 import com.example.mobile_termproject.R;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,12 +43,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // ★ Firestore 경로 설정 (하드코딩된 UID 사용)
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
         ingredientsRef = db.collection("users")
-                .document("유저1")
-                .collection("식재료 목록 하위컬렉션");
+                .document(uid)
+                .collection("ingredients");
 
-        Log.d("Firestore", "ingredientsRef 연결됨: " + ingredientsRef.getPath());
+        Log.d(TAGdebug, "ingredientsRef 연결됨: " + ingredientsRef.getPath());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

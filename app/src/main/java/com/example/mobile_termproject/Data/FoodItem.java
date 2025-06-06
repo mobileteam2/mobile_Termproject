@@ -62,6 +62,9 @@ public class FoodItem {
         this.expirationc = expirationc;
     }
 
+    public void setImageUrl(String imageUrl){ this.imageUrl = imageUrl; }
+    public String getImageUrl() { return imageUrl; }
+
     public long getTimestamp() {
         return timestamp;
     }
