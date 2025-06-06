@@ -17,8 +17,6 @@ import static com.example.mobile_termproject.API.ApiManager.CLIENT_SECRET;
 import static com.example.mobile_termproject.API.ApiManager.NAVER_BASE_URL;
 
 import com.example.mobile_termproject.Data.NaverReturnResult;
-import com.example.mobile_termproject.Notification.NaverShoppingCategoryFetcher;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
