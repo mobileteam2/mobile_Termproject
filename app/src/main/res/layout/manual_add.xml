@@ -33,7 +33,7 @@
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_camera"
             android:scaleType="centerCrop"
-            android:contentDescription="이미지 추가" />
+            android:contentDescription="@string/menual_activity_content_description_image_add" />
 
         <!-- 식재료 이름 입력 -->
         <com.google.android.material.textfield.TextInputLayout
@@ -52,7 +52,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="유통기한 0000-00-00"
+            android:hint="@string/menual_acitivity_hint_expiration"
             android:layout_marginTop="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etExpiration"
@@ -79,7 +79,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="메모를 입력하세요."
+            android:hint="@string/menual_activity_hint_memo"
             android:layout_marginTop="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMemo"
@@ -94,7 +94,7 @@
             android:id="@+id/btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="추가"
+            android:text="@string/menual_activity_btn_add"
             android:textAllCaps="false"
             app:cornerRadius="12dp"
             android:layout_marginTop="24dp"

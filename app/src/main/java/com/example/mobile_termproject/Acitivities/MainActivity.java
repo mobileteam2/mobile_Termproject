@@ -44,8 +44,6 @@ public class MainActivity extends BaseActivity {
                 .document(uid)
                 .collection("ingredients");
 
-        Log.d(TAGdebug, "ingredientsRef 연결됨: " + ingredientsRef.getPath());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -64,7 +62,6 @@ public class MainActivity extends BaseActivity {
                 });
                 dialog.show(getSupportFragmentManager(), "ItemEditDialog");
             }
-
             @Override
             public void onDeleteButtonClick(int position) {
                 FoodItem item = foodList.get(position);
@@ -72,7 +69,6 @@ public class MainActivity extends BaseActivity {
                 ingredientsRef.document(docId)
                         .delete()
                         .addOnSuccessListener(aVoid -> {
-                            Log.d(TAGdebug, "삭제 성공: " + docId);
                             foodList.remove(position);
                             adapter.notifyDataSetChanged();
                         })
@@ -109,8 +105,6 @@ public class MainActivity extends BaseActivity {
 
         // Firestore에서 데이터 불러오기 (선택 사항)
         loadIngredientsFromFirestore();
-
-
 
         // 알림 권한 확인 및 요청
         if (!isNotificationPermissionGranted(this)) {

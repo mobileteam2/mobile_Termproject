@@ -1,15 +1,66 @@
 <resources>
+
+
+    <!--상단 메뉴-->
     <string name="app_name">Expiration Manager</string>
     <string name="top_user_menu">사용자 메뉴</string>
+
+    <!-- 하단 메뉴 -->
     <string name="bottom_menu_home">냉장고</string>
     <string name="bottom_menu_community">커뮤니티</string>
     <string name="bottom_menu_recipe">레시피 추천</string>
     <string name="bottom_menu_others">기타</string>
-    <string name="extra_menu_barcode_add_btn">바코드 추가</string>
-    <string name="extra_menu_personal_add_btn">직접 추가</string>
-    <string name="add_barcode_activity_camera_btn">카메라</string>
-    <string name="add_barcode_activity_send_btn">사진보내기</string>
-    <string name="add_barcode_activity_resend_btn">다시 찍기</string>
-    <string name="menual_add_name">식재료 이름을 입력하세요.</string>
-    <string name="menual_add_title">식재료 추가</string>
+
+    <!-- Login acitivity, Register activity-->
+    <string name="toast_msg_login_success">"로그인 성공: "</string>
+    <string name="toast_msg_login_fail">"로그인 실패: "</string>
+    <string name="login_activity_hint_email">이메일</string>
+    <string name="login_activity_hint_pwd">비밀번호</string>
+    <string name="login_activity_btn_login">로그인</string>
+    <string name="login_activity_btn_register">회원가입</string>
+    <string name="register_acitivity_hint_pwd_check">비밀번호 확인</string>
+    <string name="register_activity_btn_cancel">취소</string>
+
+
+    <!-- Main activity -->
+        <!-- ADDITEM BTN -->
+        <string name="extra_menu_barcode_add_btn">바코드 추가</string>
+        <string name="extra_menu_personal_add_btn">직접 추가</string>
+
+            <!-- Barcoede add activity -->
+            <string name="add_barcode_activity_camera_btn">카메라</string>
+            <string name="add_barcode_activity_send_btn">사진보내기</string>
+            <string name="add_barcode_activity_resend_btn">다시 찍기</string>
+
+            <!-- menual add acitivity -->
+            <string name="menual_add_name">식재료 이름을 입력하세요.</string>
+            <string name="menual_add_title">식재료 추가</string>
+            <string name="menual_activity_content_description_image_add">이미지 추가</string>
+            <string name="menual_acitivity_hint_expiration">유통기한 0000-00-00</string>
+            <string name="menual_activity_hint_memo">메모를 입력하세요.</string>
+            <string name="menual_activity_btn_add">추가</string>
+
+
+    <!-- 각 아이템 -->
+            <!-- edit acitivity -->
+            <string name="edit_activity_content_description_image">이미지 추가</string>
+            <string name="edit_activity_title">수정</string>
+            <string name="edit_activity_btn_edit">수정</string>
+            <string name="edit_activity_btn_cancel">취소</string>
+
+
+
+    <!-- confirm ingredient activity -->
+    <string name="confirm_ingredient_acitivity_title">식재료 정보 확인</string>
+    <string name="confirm_ingredient_food_name">식재료명</string>
+    <string name="confirm_ingredient_food_category">카테고리</string>
+    <string name="confirm_ingredient_choose_store_way">보관할 방식을 선택해주세요</string>
+    <string name="room">실온</string>
+    <string name="refrigerated">냉장</string>
+    <string name="yyyy_mm_dd">YYYY-MM-DD</string>
+    <string name="frozen">냉동</string>
+    <string name="confirm_ingredient_btn_save">저장</string>
+    <string name="confirm_ingredient_acitivity_btn_cancel">취소</string>
+
+
 </resources>
