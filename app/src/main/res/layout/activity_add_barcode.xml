@@ -5,32 +5,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/md_theme_light_background"
+    tools:context=".Acitivities.BarcodeAddActivity">
 
-    <include layout="@layout/layout_common_bar"/>
+    <!-- 상단 바 -->
+    <include
+        android:id="@+id/topBar"
+        layout="@layout/layout_common_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ② 푸드아이템 추가 버튼 -->
+    <!-- 본문 영역 -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="?attr/actionBarSize"
+        android:id="@+id/barcodeContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        >
-        <Button
+        android:padding="24dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 카메라 버튼 -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="카메라"/>
-        <Button
+            android:text="카메라"
+            style="?attr/materialButtonOutlinedStyle"
+            app:cornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/md_theme_light_primary"
+            android:textAllCaps="false" />
+
+        <!-- 사진 보내기 버튼 -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnImageSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="사진보내기"/>
+            android:layout_marginTop="12dp"
+            android:text="사진보내기"
+            style="?attr/materialButtonOutlinedStyle"
+            app:cornerRadius="12dp"
+            android:textAllCaps="false" />
+
+        <!-- 카메라 프리뷰 이미지 -->
         <ImageView
+            android:id="@+id/imgCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imgCamera"/>
-
+            android:layout_marginTop="24dp"
+            android:contentDescription="카메라 이미지"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/camera_icon" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

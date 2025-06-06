@@ -23,35 +23,44 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    // ✅ XML 뷰 자동 연결용 ViewBinding 활성화
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
-
+    // 기본 AndroidX 라이브러리들
     implementation libs.appcompat
-    implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+
+    // ✅ Material Design 3 (최신 스타일)
+    implementation 'com.google.android.material:material:1.11.0'
+
+    // Firebase 관련
     implementation libs.firebase.firestore
-    implementation libs.ext.junit
     implementation libs.firebase.storage
     implementation libs.firebase.auth
+
+    // Testing
+    implementation libs.ext.junit
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
-    // 하단 네비케이션 바
-    implementation libs.material.v1110
+    // ✅ 기존 material 제거 (중복될 수 있는 항목 제거)
+    // implementation libs.material
+    // implementation libs.material.v1110
 
-    // 바코드 인식 라이브러리
-    implementation(libs.barcode.scanning)
-
-    // Recipe Gson 반환용
+    // 기타 기능
+    implementation libs.barcode.scanning
     implementation libs.gson
-
-    // 네이버 쇼핑 api 사용을 위한 okhttp
-    implementation(libs.okhttp)
+    implementation libs.okhttp
 }

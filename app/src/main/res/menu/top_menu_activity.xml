@@ -4,6 +4,8 @@
     <item
         android:id="@+id/topBar_userMenu"
         android:title="사용자 메뉴"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/menu"
+        app:actionLayout="@layout/menu_user_icon_layout"
+        app:showAsAction="always"
         />
 </menu>

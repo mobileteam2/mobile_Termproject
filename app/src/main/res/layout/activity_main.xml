@@ -5,109 +5,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_theme_light_background">
+    android:fitsSystemWindows="true">
 
-    <!-- 상단 바 (앱 이름 + 사용자 메뉴) -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/md_theme_light_primary"
-        android:title="mobile_termproject"
-        android:titleTextColor="@color/md_theme_light_onPrimary"
-        app:menu="@menu/menu_top"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <include layout="@layout/layout_common_bar"/>
 
-    <!-- 푸드아이템 추가 버튼 (FAB) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnAddFood"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="Add Food"
-        app:srcCompat="@drawable/ic_launcher_foreground"
-        app:backgroundTint="@color/md_theme_light_primary"
-        app:tint="@color/md_theme_light_onPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
-
-    <!-- RecyclerView로 개선한 리스트 뷰 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFoods"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:padding="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- 하단 바 -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/md_theme_light_surface"
-        app:itemIconTint="@color/selector_nav_item"
-        app:itemTextColor="@color/selector_nav_item"
-        app:menu="@menu/menu_bottom_nav"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--
-    <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <!-- ② 푸드아이템 추가 버튼 -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:orientation="vertical">
 
-        <include layout="@layout/layout_common_bar"/>
-
-        <LinearLayout
+        <!-- ③ 카드뷰
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginBottom="?attr/actionBarSize"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="@android:color/transparent"
             >
-            <Button
-                android:id="@+id/btnAddFood"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="4dp"
-                android:text="추가"
-                android:textColor="@android:color/white"
-                android:layout_gravity="end"/>
+        </androidx.cardview.widget.CardView>
+        -->
+        <ListView
+            android:id="@+id/lvFoods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="16dp" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardContainer"
-                android:layout_width="345dp"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                app:cardUseCompatPadding="true"
-                android:layout_gravity="center"
-                >
+    </LinearLayout>
 
-                <ListView
-                    android:id="@+id/lvFoods"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@android:color/darker_gray"
-                    android:dividerHeight="1dp" />
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    -->
+    <!-- 버튼 위치, 디자인 수정 -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:text="Add Item"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/plus_jakarta_sans_bold"
+
+
+        app:icon="@drawable/add"
+        app:iconTint="@color/white"
+        app:iconSize="24dp"
+
+        app:backgroundTint="#369EFF"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/FabPillShape"/>
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
