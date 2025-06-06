@@ -141,7 +141,8 @@ public class MainActivity extends BaseActivity {
                 String category = doc.getString("category");
                 String expiration = doc.getString("expiration");  // 예시: 기한 필드명
                 String id = doc.getId();
-                foodList.add(new FoodItem(name, category, expiration, id));
+                String imgUrl = doc.getString("imageUrl");
+                foodList.add(new FoodItem(name, category, expiration, id, imgUrl));
             }
             adapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {

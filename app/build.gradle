@@ -63,4 +63,6 @@ dependencies {
     implementation libs.barcode.scanning
     implementation libs.gson
     implementation libs.okhttp
+    implementation libs.glide
+    annotationProcessor libs.glide.compiler
 }

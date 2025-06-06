@@ -18,13 +18,6 @@ import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.Data.NaverReturnResult;
 import com.example.mobile_termproject.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Collections;
-import java.util.Map;
 
 public class NotificationListener extends NotificationListenerService {
 
@@ -113,7 +106,7 @@ public class NotificationListener extends NotificationListenerService {
         intent.putExtra("imgUrl", item.getImageUrl());
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "confirm_channel")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -154,15 +147,15 @@ public class NotificationListener extends NotificationListenerService {
 
         // Android 8.0 이상은 채널 생성 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (manager.getNotificationChannel("confirm_channel") == null) {
-                NotificationChannel channel = new NotificationChannel("confirm_channel", "식재료 확인", NotificationManager.IMPORTANCE_HIGH);
+            if (manager.getNotificationChannel("disconnect_channel") == null) {
+                NotificationChannel channel = new NotificationChannel("disconnect_channel", "알림 서비스 상태", NotificationManager.IMPORTANCE_HIGH);
                 manager.createNotificationChannel(channel);
             }
         }
 
-
         manager.notify(1001, builder.build());
     }
+
 
 
 }
