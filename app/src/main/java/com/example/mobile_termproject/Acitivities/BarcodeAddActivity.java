@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class BarcodeAddActivity extends BaseActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
+                barcode.launchCamera(BarcodeAddActivity.this);
                 btnCamera.setText(R.string.add_barcode_activity_resend_btn);
             }
         });
@@ -77,9 +78,6 @@ public class BarcodeAddActivity extends BaseActivity {
                     api.getInfoNaver(foodName, new NaverAPI.NaverCallback() {
                         @Override
                         public void onSuccess(NaverReturnResult result) {
-
-
-
                             long timestamp = System.currentTimeMillis();
                             String category = result.getFinalCategory();
                             String imageUrl = result.getImageUrl();
@@ -109,20 +107,6 @@ public class BarcodeAddActivity extends BaseActivity {
                                 sendUserNotification(foodItem);
                                 Log.d(TAGdebug, "앱 알림 발송 : " + frozen + " / " + refrigerated + " / " + room);
 
-                                /*
-                                user = FirebaseAuth.getInstance().getCurrentUser();
-                                String uid = user.getUid();
-                                CollectionReference ingredientsRef = db.collection("users").document(uid).collection("ingredients");
-
-                                ingredientsRef.add(foodItem)
-                                        .addOnSuccessListener(documentReference -> {
-                                            Log.d(TAGdebug, "식재료 저장 성공: " + documentReference.getId());
-                                            Log.d(TAGdebug, "식재료 유통기한c : " + foodItem.expirationc.getFrozen());
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e(TAGdebug, "식재료 저장 실패", e);
-                                        });
-                                */
                                 Intent intent = new Intent(BarcodeAddActivity.this, ConfirmIngredientActivity.class);
                                 intent.putExtra("name", foodItem.getName());
                                 intent.putExtra("category", foodItem.getCategory());
@@ -155,10 +139,15 @@ public class BarcodeAddActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == barcode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Log.d(TAGdebug, "사진 보내기 성공");
-
-            String imagePath = barcode.getPhotoFile().getAbsolutePath();
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
+            File latestPhotoFile = barcode.getPhotoFile();
+            String imagePath = null;
+            Bitmap bitmap = null;
+            if(latestPhotoFile != null){
+                imagePath = latestPhotoFile.getAbsolutePath();
+                bitmap = BitmapFactory.decodeFile(imagePath);
+            }
+            Log.d(TAGdebug, "이미지 경로: "+imagePath);
+            Log.d(TAGdebug, "파일 존재 여부: " +latestPhotoFile.exists());
             if (bitmap != null) {
                 imgCamera.setImageBitmap(bitmap);
             } else {
