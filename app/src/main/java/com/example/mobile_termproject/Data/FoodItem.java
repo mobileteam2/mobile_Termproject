@@ -1,15 +1,14 @@
 package com.example.mobile_termproject.Data;
 
-import java.util.ArrayList;
-
 public class FoodItem {
     private String name;
     private String category;
-    private ArrayList<String> categories = new ArrayList<>();
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
 
     private Expiration expirationc;
-    private String id;
+
+    private String storagetype;
+    private String docId;
 
     private String imageUrl;
     private long timestamp;
@@ -25,20 +24,13 @@ public class FoodItem {
     public FoodItem(String name, String category, String expiration, String docId) {
         this(name, category, expiration, docId, null);
     }
-
-    public FoodItem(String name, ArrayList<String> categories, String expiration, String docId, String imageUrl){
-
-    }
-
     public FoodItem(String name, String category, String expiration, String docId, String imageUrl) {
         this.name = name;
         this.category = category;
         this.expiration = expiration;
-        this.id = docId;
+        this.docId = docId;
         this.imageUrl = imageUrl;
     }
-
-
 
     // getter & setter
     public String getName() {
@@ -81,5 +73,13 @@ public class FoodItem {
         this.timestamp = timestamp;
     }
 
-    public String getId(){ return id; }
+    public String getId(){ return docId; }
+
+    public String getStoragetype() {
+        return storagetype;
+    }
+
+    public void setStoragetype(String storagetype) {
+        this.storagetype = storagetype;
+    }
 }

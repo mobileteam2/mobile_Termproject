@@ -1,5 +1,10 @@
 package com.example.mobile_termproject.Notification;
 
+import android.util.Log;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,18 +31,8 @@ import java.text.SimpleDateFormat;
 public class ExpirationCalculator {
 
     // 카테고리별 보관방식에 따른 유통기한 일수 (냉장, 냉동, 실온)
-    private static final Map<String, int[]> shelfLifeMap = new HashMap<>();
-
-    static {
-        // {실온, 냉장, 냉동} 순서
-        shelfLifeMap.put("우유", new int[]{2, 10, 30});
-        shelfLifeMap.put("달걀", new int[]{7, 21, 60});
-        shelfLifeMap.put("두부", new int[]{1, 7, 30});
-        shelfLifeMap.put("고기", new int[]{1, 5, 90});
-        shelfLifeMap.put("채소", new int[]{2, 4, 14});
-        shelfLifeMap.put("과일", new int[]{3, 7, 30});
-        shelfLifeMap.put("냉동식품", new int[]{1, 30, 90});
-        // 기본값이 필요한 경우도 고려 가능
+    public interface ExpirationCallback {
+        void onResult(Map<String, String> expirationDates);
     }
 
     /**
@@ -45,15 +40,46 @@ public class ExpirationCalculator {
      * category: 식재료 카테고리
      * @return 보관 방식별 유통기한 (yyyy-MM-dd 형식의 String Map)
      */
-    public static Map<String, String> calculateExpirationDates(String category, long timestampMillis) {
+    public static void calculateExpirationDates(String category, long timestampMillis, ExpirationCallback callback) {
+        /*
+         기존 코드
         int[] days = shelfLifeMap.getOrDefault(category, new int[]{7, 30, 2});
 
         Map<String, String> result = new HashMap<>();
         result.put("실온", addDays(timestampMillis, days[0]));
         result.put("냉장", addDays(timestampMillis, days[1]));
         result.put("냉동", addDays(timestampMillis, days[2]));
+         */
 
-        return result;
+        Map<String, String> result = new HashMap<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("ingredients").document(category).get().addOnCompleteListener(task -> {
+
+
+            if (task.isSuccessful()) {
+                DocumentSnapshot doc = task.getResult();
+                if (doc != null && doc.exists()) {
+                    Long roomDays = doc.getLong("실온");
+                    Long coolDays = doc.getLong("냉장");
+                    Long freezeDays = doc.getLong("냉동");
+
+                    if (roomDays != null)
+                        result.put("실온", addDays(timestampMillis, roomDays.intValue()));
+                    if (coolDays != null)
+                        result.put("냉장", addDays(timestampMillis, coolDays.intValue()));
+                    if (freezeDays != null)
+                        result.put("냉동", addDays(timestampMillis, freezeDays.intValue()));
+                } else {
+                    Log.w("Firestore", "No document for category: " + category);
+                }
+            } else {
+                Log.e("Firestore", "get failed", task.getException());
+            }
+
+            Log.d("Firestore", "유통기한 불러오기 성공 : " + result.get("실온") + result.get("냉장") + result.get("냉동"));
+            callback.onResult(result); // 한 군데에서 결과 반환
+        });
     }
 
     // 밀리초 기준 날짜에 일수 추가 후 yyyy-MM-dd 문자열 반환

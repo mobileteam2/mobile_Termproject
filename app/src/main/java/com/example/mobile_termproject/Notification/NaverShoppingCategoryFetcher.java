@@ -37,10 +37,7 @@ import okhttp3.Response;
             Log.e("CategoryError", e.getMessage());
         }
 });
-
-
- */
-
+*/
 /*
 public class NaverShoppingCategoryFetcher {
 

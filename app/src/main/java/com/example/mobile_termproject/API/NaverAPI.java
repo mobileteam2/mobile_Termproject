@@ -17,6 +17,7 @@ import static com.example.mobile_termproject.API.ApiManager.CLIENT_SECRET;
 import static com.example.mobile_termproject.API.ApiManager.NAVER_BASE_URL;
 
 import com.example.mobile_termproject.Data.NaverReturnResult;
+import com.example.mobile_termproject.Notification.NaverShoppingCategoryFetcher;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class NaverAPI {
         void onFailure(Exception e);
     }
 
-    public void getInfoNaver(String foodName, NaverCallback callback){
+    public void getInfoNaver(String foodName, NaverCallback callback) {
         try {
             String encodedFoodName = URLEncoder.encode(foodName, "UTF-8");
             String apiUrl = NAVER_BASE_URL + encodedFoodName;
@@ -98,6 +99,4 @@ public class NaverAPI {
             callback.onFailure(e);
         }
     }
-
-
 }

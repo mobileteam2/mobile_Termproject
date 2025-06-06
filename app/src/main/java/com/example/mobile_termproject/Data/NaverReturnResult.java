@@ -24,6 +24,10 @@ public class NaverReturnResult {
         return category1;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return String.join(" > ", category1, category2, category3, category4);
