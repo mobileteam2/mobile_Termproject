@@ -21,7 +21,7 @@ glide = "4.16.0"
 [libraries]
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "compiler" }
+
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
