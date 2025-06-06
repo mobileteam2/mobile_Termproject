@@ -2,6 +2,7 @@ package com.example.mobile_termproject.Data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.mobile_termproject.Acitivities.BarcodeAddActivity;
 import com.example.mobile_termproject.Acitivities.ManualAddActivity;
 import com.example.mobile_termproject.R;
@@ -45,8 +47,6 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
 
     }
 
-
-
     @Override
     public int getCount() {
         return super.getCount();
@@ -63,16 +63,6 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         return super.getItem(position);
     }
 
-    public void setInfo(
-            String name,
-            String category,
-            String expiration
-    ){
-        tvName.setText(name);
-        tvCategory.setText(category);
-        tvExpiration.setText(expiration);
-    }
-
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -84,7 +74,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         FoodItem item = getItem(position);
 
         // 🔽 TextView 바인딩 추가
-        tvImage = v.findViewById(R.id.imgIngredient);  // 이미지
+        tvImage = v.findViewById(R.id.imgFood);  // 이미지
         tvName = v.findViewById(R.id.tvFoodName);       // 이름
         tvCategory = v.findViewById(R.id.tvCategory);   // 카테고리
         tvExpiration = v.findViewById(R.id.tvExpirationDate); // 유통기한
@@ -98,11 +88,19 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
         tvCategory.setText(item.getCategory());
         tvExpiration.setText(item.getExpiration() + "까지");
         */
-        setInfo(
-                item.getName(),
-                item.getCategory(),
-                item.getExpiration() + "까지"
-        );
+        tvName.setText(item.getName());
+        tvCategory.setText(item.getCategory());
+        tvExpiration.setText(item.getExpiration() + "까지");
+
+        String imageUrl = item.getImageUrl();
+        if(imageUrl != null && !imageUrl.trim().isEmpty()){
+            Glide.with(v.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.edit)
+                    .error(R.drawable.delete)
+                    .into(tvImage);
+        }
+
 
         //수정 버튼
         btnEdit.setOnClickListener(view -> {

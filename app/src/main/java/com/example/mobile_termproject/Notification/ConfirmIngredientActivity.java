@@ -2,6 +2,7 @@ package com.example.mobile_termproject.Notification;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.R;
@@ -39,6 +41,7 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         String frozen = getIntent().getStringExtra("frozen");
         String refrigerated = getIntent().getStringExtra("refrigerated");
         String room = getIntent().getStringExtra("room");
+        String imageUrl = getIntent().getStringExtra("imageUrl");
         long timestamp = getIntent().getLongExtra("timestamp", 0);
 
         if (name == null || category == null || frozen == null || refrigerated == null || room == null) {
@@ -67,12 +70,22 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
         Button btnSave = findViewById(R.id.btnSave);
         Button btnCancel = findViewById(R.id.btnCancel);
 
+        ImageView thumnail = findViewById(R.id.imageThumbnail);
+
         // 값 표시
         nameText.setText(name);
         categoryText.setText(category);
         roomDate.setText(room);
         refrigeratedDate.setText(refrigerated);
         frozenDate.setText(frozen);
+
+        if(imageUrl != null && !imageUrl.trim().isEmpty()){
+            Glide.with(ConfirmIngredientActivity.this)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.edit)
+                    .error(R.drawable.delete)
+                    .into(thumnail);
+        }
 
         // 카드 클릭 시 강조 처리
         cardRoom.setOnClickListener(v -> {
@@ -114,6 +127,7 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
 
             foodItem.setExpiration(expirationValue);
             foodItem.setStoragetype(selectedStorageType);
+            foodItem.setImageUrl(imageUrl);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();

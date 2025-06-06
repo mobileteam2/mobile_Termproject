@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity {
 
         lvFoods = findViewById(R.id.lvFoods);
 
-
         // 2) 어댑터 생성 및 연결
         adapter = new FoodItemAdapter(this, R.layout.item_food, foodList, new FoodItemAdapter.onItemButtonClickListener() {
             @Override
@@ -82,6 +81,7 @@ public class MainActivity extends BaseActivity {
                         });
             }
         });
+
         lvFoods.setAdapter(adapter);
 
         btnAddFood = findViewById(R.id.fab_add_item); // 추가 버튼도 바인딩
@@ -110,6 +110,8 @@ public class MainActivity extends BaseActivity {
         // Firestore에서 데이터 불러오기 (선택 사항)
         loadIngredientsFromFirestore();
 
+
+
         // 알림 권한 확인 및 요청
         if (!isNotificationPermissionGranted(this)) {
             new AlertDialog.Builder(this)
@@ -123,8 +125,6 @@ public class MainActivity extends BaseActivity {
                     .show();
         }
     }
-
-
 
     @Override
     protected void setTopAndBottomBar() {
@@ -140,12 +140,14 @@ public class MainActivity extends BaseActivity {
                 String name = doc.getString("name");
                 String category = doc.getString("category");
                 String expiration = doc.getString("expiration");  // 예시: 기한 필드명
+                String imageUrl = doc.getString("imageUrl");
                 String id = doc.getId();
-                foodList.add(new FoodItem(name, category, expiration, id));
+                foodList.add(new FoodItem(name, category, expiration, id, imageUrl));
             }
             adapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
             Log.e("Firestore", "불러오기 실패", e);
+            Log.d(TAGdebug, "로드 실패: " + e.getMessage());
         });
     }
 
@@ -158,5 +160,11 @@ public class MainActivity extends BaseActivity {
         } else {
             return NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.getPackageName());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadIngredientsFromFirestore();
     }
 }

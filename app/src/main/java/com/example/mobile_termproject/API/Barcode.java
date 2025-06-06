@@ -183,21 +183,34 @@ public class Barcode {
                 String returnStr = reader.readLine();
                 reader.close();
                 if (returnStr != null){
-                    result = returnStr;
+                    //result = returnStr;
+                    result = cleanProductName(returnStr);
                 } else{
-                    result = "NULL";
+                    result = null;
                 }
             } else {
-                result = "서버 응답 오류: " + responseCode;
+                result = null;
+                Log.d(TAGDebug, "서버 응답 오류: " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = "요청 실패: " + e;
+            Log.d(TAGDebug, "요청 실패: " + e);
+            result = null;
         }
-        Log.d(TAGDebug, "요청 URL: " + urlStr);
-        Log.d(TAGDebug, "응답 코드: " + responseCode);
-        Log.d(TAGDebug, "서버 응답 내용: " + result);
         return result;
+    }
+
+    public String cleanProductName(String rawName) {
+        rawName = rawName.toLowerCase();
+        String cleaned = rawName.replaceAll("\\[[^\\]]*\\]", "").trim();
+
+        cleaned = cleaned.replaceAll("\\d+(ml|g|kg|개|입|장|팩|L|ℓ|박스|box)", "");
+
+        cleaned = cleaned.replaceAll("(\\+|×|x|세트|기획|한정|증정|사은품)", "");
+
+        cleaned = cleaned.replaceAll("\\s{2,}", " ").trim();
+
+        return cleaned;
     }
 
 }
