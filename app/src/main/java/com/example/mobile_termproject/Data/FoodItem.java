@@ -1,8 +1,11 @@
 package com.example.mobile_termproject.Data;
 
+import java.util.ArrayList;
+
 public class FoodItem {
     private String name;
     private String category;
+    private ArrayList<String> categories = new ArrayList<>();
     private String expiration;  // 또는 Expiration 객체로 바꾸고 싶으면 알려줘
 
     private Expiration expirationc;
@@ -22,6 +25,11 @@ public class FoodItem {
     public FoodItem(String name, String category, String expiration, String docId) {
         this(name, category, expiration, docId, null);
     }
+
+    public FoodItem(String name, ArrayList<String> categories, String expiration, String docId, String imageUrl){
+
+    }
+
     public FoodItem(String name, String category, String expiration, String docId, String imageUrl) {
         this.name = name;
         this.category = category;
@@ -29,6 +37,8 @@ public class FoodItem {
         this.id = docId;
         this.imageUrl = imageUrl;
     }
+
+
 
     // getter & setter
     public String getName() {

@@ -27,16 +27,22 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
     public ImageButton btnEdit, btnDelete;
     public ImageView tvImage;
     public TextView tvName, tvCategory, tvExpiration;
-    private onItemEditButtonClickListener listener;
-    public interface onItemEditButtonClickListener {
+    private onItemButtonClickListener listener;
+    public interface onItemButtonClickListener {
         void onEditButtonClick(int position);
+        void onDeleteButtonClick(int position);
+
+    }
+    public interface onItemDeleteButtonClickListener {
+
     }
 
-    public FoodItemAdapter(Context context, int resource, List<FoodItem> items, onItemEditButtonClickListener listener) {
+    public FoodItemAdapter(Context context, int resource, List<FoodItem> items, onItemButtonClickListener listener) {
         super(context, resource, items);
         this.mContext = context;
         this.resourceLayout = resource;
         this.listener = listener;
+
     }
 
 
@@ -98,7 +104,7 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
                 item.getExpiration() + "까지"
         );
 
-        // 🔽 예시 버튼 동작
+        //수정 버튼
         btnEdit.setOnClickListener(view -> {
             if(listener != null){
                 listener.onEditButtonClick(position);
@@ -106,8 +112,13 @@ public class FoodItemAdapter extends ArrayAdapter<FoodItem> {
             }
 
         );
-        btnDelete.setOnClickListener(view ->
-                Toast.makeText(mContext, item.getName() + " 삭제 클릭", Toast.LENGTH_SHORT).show()
+
+        //삭제 버튼
+        btnDelete.setOnClickListener(view -> {
+            if(listener != null){
+                listener.onDeleteButtonClick(position);
+                }
+            }
         );
 
         return v;

@@ -19,11 +19,17 @@ public class BaseActivity extends AppCompatActivity {
     protected BottomNavigationView bottomNavigationView;
     public static final String TAGdebug = "DEBUG";
 
-
+    /*
+        DB 통합 관리
+     */
     @SuppressLint("StaticFieldLeak")
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    public static class Categories {
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -69,7 +69,9 @@ public class BarcodeAddActivity extends BaseActivity {
                             Log.d(TAGdebug, "name : " + result.name);
                             Log.d(TAGdebug, "iamgeUrl : " + result.imageUrl);
                             Log.d(TAGdebug, "category : " + result.toString());
+
                             Map<String, Objects> item = new HashMap<>();
+
                             long timestamp = System.currentTimeMillis();
                             Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(result.toString(), timestamp);
 

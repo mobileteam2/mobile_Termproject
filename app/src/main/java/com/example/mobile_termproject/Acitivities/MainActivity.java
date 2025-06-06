@@ -39,7 +39,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // ★ Firestore 경로 설정 (하드코딩된 UID 사용)
         String uid = user.getUid();
         ingredientsRef = db.collection("users")
                 .document(uid)
@@ -56,14 +55,32 @@ public class MainActivity extends BaseActivity {
 
 
         // 2) 어댑터 생성 및 연결
-        adapter = new FoodItemAdapter(this, R.layout.item_food, foodList, position -> {
-            FoodItem item = foodList.get(position);
-            ItemEditActivity dialog = ItemEditActivity.newInstance(item.getId(), position);
-            dialog.setOnItemEditCompleteListener(() -> {
-                adapter.notifyDataSetChanged();
-            });
+        adapter = new FoodItemAdapter(this, R.layout.item_food, foodList, new FoodItemAdapter.onItemButtonClickListener() {
+            @Override
+            public void onEditButtonClick(int position) {
+                FoodItem item = foodList.get(position);
+                ItemEditActivity dialog = ItemEditActivity.newInstance(item.getId(), position);
+                dialog.setOnItemEditCompleteListener(() -> {
+                    adapter.notifyDataSetChanged();
+                });
+                dialog.show(getSupportFragmentManager(), "ItemEditDialog");
+            }
 
-            dialog.show(getSupportFragmentManager(), "ItemEditDialog");
+            @Override
+            public void onDeleteButtonClick(int position) {
+                FoodItem item = foodList.get(position);
+                String docId = item.getId();
+                ingredientsRef.document(docId)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d(TAGdebug, "삭제 성공: " + docId);
+                            foodList.remove(position);
+                            adapter.notifyDataSetChanged();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.d(TAGdebug, "삭제 실패: " + e.getMessage());
+                        });
+            }
         });
         lvFoods.setAdapter(adapter);
 

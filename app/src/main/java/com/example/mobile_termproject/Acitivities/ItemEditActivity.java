@@ -138,6 +138,13 @@ public class ItemEditActivity extends BottomSheetDialogFragment {
             }
         });
 
+        btnCacel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
         return view;
     }
 }

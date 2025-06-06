@@ -29,7 +29,7 @@ public class ExpirationCalculator {
     private static final Map<String, int[]> shelfLifeMap = new HashMap<>();
 
     static {
-        // {냉장, 냉동, 실온} 순서
+        // {실온, 냉장, 냉동} 순서
         shelfLifeMap.put("우유", new int[]{2, 10, 30});
         shelfLifeMap.put("달걀", new int[]{7, 21, 60});
         shelfLifeMap.put("두부", new int[]{1, 7, 30});
