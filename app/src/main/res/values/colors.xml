@@ -1,7 +1,7 @@
 <resources>
     <!-- Material 3 Light Theme Colors -->
 
-    <color name="md_theme_light_primary">#6750A4</color>
+    <color name="md_theme_light_primary">#369EFF</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#EADDFF</color>
     <color name="md_theme_light_onPrimaryContainer">#21005D</color>
