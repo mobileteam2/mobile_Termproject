@@ -1,8 +1,13 @@
 package com.example.mobile_termproject.Acitivities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,18 +16,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.example.mobile_termproject.API.Barcode;
 import com.example.mobile_termproject.API.NaverAPI;
 import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.Data.NaverReturnResult;
+import com.example.mobile_termproject.Notification.ConfirmIngredientActivity;
 import com.example.mobile_termproject.Notification.ExpirationCalculator;
 import com.example.mobile_termproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +57,7 @@ public class BarcodeAddActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
-                btnCamera.setText("다시 찍기");
+                btnCamera.setText(R.string.add_barcode_activity_resend_btn);
             }
         });
 
@@ -69,24 +75,33 @@ public class BarcodeAddActivity extends BaseActivity {
                             Log.d(TAGdebug, "name : " + result.name);
                             Log.d(TAGdebug, "iamgeUrl : " + result.imageUrl);
                             Log.d(TAGdebug, "category : " + result.toString());
+
                             Map<String, Objects> item = new HashMap<>();
+
                             long timestamp = System.currentTimeMillis();
-                            Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(result.toString(), timestamp);
+                            String category = result.getFinalCategory();
+                            FoodItem foodItem = new FoodItem();
+
+                            ExpirationCalculator.calculateExpirationDates(category, timestamp, r -> {
+                                // FoodItem 임시 생성
+                                foodItem.setName(result.name);
+                                foodItem.setCategory(category);
+                                foodItem.setExpirationc(new Expiration(
+                                        r.get("냉동"),
+                                        r.get("냉장"),
+                                        r.get("실온")
+                                ));
+                                foodItem.setTimestamp(timestamp);
+
+                                // 사용자에게 앱 알림 발송 (FoodItem 객체를 intent로 전달)
+                                sendUserNotification(foodItem);
+                                Log.d(TAGdebug, "앱 알림 발송 : " + r.get("실온") + " / " + r.get("냉장") + " / " + r.get("냉동"));
+                            });
 
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String uid = user.getUid();
                             CollectionReference ingredientsRef = db.collection("users").document(uid).collection("ingredients");
 
-                            // FoodItem 객체 생성
-                            FoodItem foodItem = new FoodItem();
-                            foodItem.setName(result.name);
-                            foodItem.setCategory(result.toString());
-                            foodItem.setExpirationc(new Expiration(
-                                    expirationResult.get("냉동"),
-                                    expirationResult.get("냉장"),
-                                    expirationResult.get("실온")
-                            ));
-                            foodItem.setTimestamp(timestamp);
                             foodItem.setImageUrl(result.imageUrl);
 
                             ingredientsRef.add(foodItem)
@@ -97,8 +112,6 @@ public class BarcodeAddActivity extends BaseActivity {
                                         Log.e(TAGdebug, "식재료 저장 실패", e);
                                     });
 
-
-                            Log.d("Category", expirationResult.toString());
                         }
 
                         @Override
@@ -146,5 +159,36 @@ public class BarcodeAddActivity extends BaseActivity {
     @Override
     protected void setTopAndBottomBar() {
         super.setTopAndBottomBar();
+    }
+
+    public void sendUserNotification(FoodItem item) {
+        Log.d(TAGdebug, "발송 전 확인 : " + item.getExpirationc().getRoom() + " / " + item.getExpirationc().getRefrigerated() + " / " + item.getExpirationc().getFrozen());
+
+        Intent intent = new Intent(this, ConfirmIngredientActivity.class);
+        intent.putExtra("name", item.getName());
+        intent.putExtra("category", item.getCategory());
+        intent.putExtra("frozen", item.getExpirationc().getFrozen());
+        intent.putExtra("refrigerated", item.getExpirationc().getRefrigerated());
+        intent.putExtra("room", item.getExpirationc().getRoom());
+        intent.putExtra("timestamp", item.getTimestamp());
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "confirm_channel")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("새 식재료 감지됨")
+                .setContentText(item.getName() + " 정보를 확인하세요")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("confirm_channel", "식재료 확인", NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+        }
+
+        manager.notify((int) System.currentTimeMillis(), builder.build());
     }
 }

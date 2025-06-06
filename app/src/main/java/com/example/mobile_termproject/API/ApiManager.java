@@ -12,4 +12,5 @@ public class ApiManager {
     //Recipe API
     public static final String recipeAPI_KEY = "RECIPE_API_KEY";
 
+
 }

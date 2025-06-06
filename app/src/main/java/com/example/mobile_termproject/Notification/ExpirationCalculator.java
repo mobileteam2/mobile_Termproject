@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 
  */
 public class ExpirationCalculator {
+
     // 카테고리별 보관방식에 따른 유통기한 일수 (냉장, 냉동, 실온)
     public interface ExpirationCallback {
         void onResult(Map<String, String> expirationDates);
@@ -81,7 +82,7 @@ public class ExpirationCalculator {
         });
     }
 
-        // 밀리초 기준 날짜에 일수 추가 후 yyyy-MM-dd 문자열 반환
+    // 밀리초 기준 날짜에 일수 추가 후 yyyy-MM-dd 문자열 반환
     private static String addDays(long millis, int daysToAdd) {
         Calendar calendar = Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Seoul"));
         calendar.setTimeInMillis(millis);

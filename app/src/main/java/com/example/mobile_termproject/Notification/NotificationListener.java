@@ -73,39 +73,44 @@ public class NotificationListener extends NotificationListenerService {
         fetcher.getInfoNaver(ingredientName, new NaverAPI.NaverCallback() {
             @Override
             public void onSuccess(NaverReturnResult result) {
+                String category = result.getFinalCategory();
+                Log.d(TAG, "카테고리 추출 성공 : " + result.getFinalCategory());
                 long timestamp = sbn.getPostTime();
-                sendUserNotification(result, timestamp);
-                Log.d(TAG, "앱 알림 발송 성공");
+
+                ExpirationCalculator.calculateExpirationDates(category, timestamp, r -> {
+                    // FoodItem 임시 생성
+                    FoodItem foodItem = new FoodItem();
+                    foodItem.setName(ingredientName);
+                    foodItem.setCategory(category);
+                    foodItem.setExpirationc(new Expiration(
+                            r.get("냉동"),
+                            r.get("냉장"),
+                            r.get("실온")
+                    ));
+                    foodItem.setTimestamp(timestamp);
+                    foodItem.setImageUrl(result.getImageUrl());
+                    // 사용자에게 앱 알림 발송 (FoodItem 객체를 intent로 전달)
+                    sendUserNotification(foodItem);
+                    Log.d(TAG, "앱 알림 발송 : " + r.get("실온") + " / " + r.get("냉장") + " / " + r.get("냉동"));
+                });
             }
             @Override
             public void onFailure(Exception e) {
-                Log.e("CategoryError", e.getMessage());
+                Log.e("CategoryError",  e.getMessage());
             }
         });
     }
 
-    private void sendUserNotification(NaverReturnResult result, long timestamp) {
-        FoodItem item = new FoodItem();
-        String ingredientName = result.getName();
-        String category = result.getFinalCategory();
-        String imgUrl = result.getImageUrl();
-        Map<String, String> expirationResult = ExpirationCalculator.calculateExpirationDates(category, timestamp);
-        item.setName(ingredientName);
-        item.setCategory(category);
-        item.setExpirationc(new Expiration(
-                expirationResult.get("냉동"),
-                expirationResult.get("냉장"),
-                expirationResult.get("실온")
-        ));
-
+    public void sendUserNotification(FoodItem item) {
+        Log.d(TAG, "발송 전 확인 : " + item.getExpirationc().getRoom() + " / " + item.getExpirationc().getRefrigerated() + " / " + item.getExpirationc().getFrozen());
         Intent intent = new Intent(this, ConfirmIngredientActivity.class);
         intent.putExtra("name", item.getName());
         intent.putExtra("category", item.getCategory());
         intent.putExtra("frozen", item.getExpirationc().getFrozen());
         intent.putExtra("refrigerated", item.getExpirationc().getRefrigerated());
         intent.putExtra("room", item.getExpirationc().getRoom());
-        intent.putExtra("timestamp", timestamp);
-        intent.putExtra("imgUrl", imgUrl);
+        intent.putExtra("timestamp", item.getTimestamp());
+        intent.putExtra("imgUrl", item.getImageUrl());
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -141,25 +146,20 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerDisconnected();
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Android 8.0 이상은 채널 생성 필요
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "disconnect_channel";
-            if (manager.getNotificationChannel(channelId) == null) {
-                NotificationChannel channel = new NotificationChannel(
-                        channelId,
-                        "서비스 끊김 알림",
-                        NotificationManager.IMPORTANCE_HIGH
-                );
-                manager.createNotificationChannel(channel);
-            }
-        }
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "disconnect_channel")
                 .setContentTitle("알림 서비스 연결 끊김")
                 .setContentText("앱을 다시 실행해주세요.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
+
+        // Android 8.0 이상은 채널 생성 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (manager.getNotificationChannel("confirm_channel") == null) {
+                NotificationChannel channel = new NotificationChannel("confirm_channel", "식재료 확인", NotificationManager.IMPORTANCE_HIGH);
+                manager.createNotificationChannel(channel);
+            }
+        }
+
 
         manager.notify(1001, builder.build());
     }

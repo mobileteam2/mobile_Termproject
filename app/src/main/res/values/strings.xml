@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Expiration Manager</string>
+    <string name="top_user_menu">사용자 메뉴</string>
+    <string name="bottom_menu_home">냉장고</string>
+    <string name="bottom_menu_community">커뮤니티</string>
+    <string name="bottom_menu_recipe">레시피 추천</string>
+    <string name="bottom_menu_others">기타</string>
+    <string name="extra_menu_barcode_add_btn">바코드 추가</string>
+    <string name="extra_menu_personal_add_btn">직접 추가</string>
+    <string name="add_barcode_activity_camera_btn">카메라</string>
+    <string name="add_barcode_activity_send_btn">사진보내기</string>
+    <string name="add_barcode_activity_resend_btn">다시 찍기</string>
+    <string name="menual_add_name">식재료 이름을 입력하세요.</string>
+    <string name="menual_add_title">식재료 추가</string>
 </resources>

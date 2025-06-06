@@ -1,14 +1,13 @@
 package com.example.mobile_termproject.Acitivities;
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-import static androidx.core.content.ContentProviderCompat.requireContext;
-import static androidx.test.InstrumentationRegistry.getContext;
+
+import static com.example.mobile_termproject.Acitivities.BaseActivity.db;
+import static com.example.mobile_termproject.Acitivities.BaseActivity.user;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,14 +67,11 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
         btnAdd = view.findViewById(R.id.btnAdd);
         imgIngredient = view.findViewById(R.id.imgIngredient);
 
-
-
-
         // Firestore 참조 (유저1 하드코딩)
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uid = user.getUid();
         ingredientsRef = db.collection("users")
-                .document("유저1")
-                .collection("식재료 목록 하위컬렉션");
+                .document(uid)
+                .collection("ingredients");
 
 
 
@@ -88,11 +84,6 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
         );
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(categoryAdapter);
-
-
-
-
-
 
         // 이미지버튼 클릭 시 카메라 실행 >>> 내부저장할지 아닐지 정해야함.
         imgIngredient.setOnClickListener(v -> {

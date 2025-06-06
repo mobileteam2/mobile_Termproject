@@ -38,7 +38,7 @@ import okhttp3.Response;
         }
 });
 */
-
+/*
 public class NaverShoppingCategoryFetcher {
 
     private final OkHttpClient client = new OkHttpClient();
@@ -101,4 +101,4 @@ public class NaverShoppingCategoryFetcher {
         }
     }
 }
-
+*/

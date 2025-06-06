@@ -73,6 +73,8 @@ public class FoodItem {
         this.timestamp = timestamp;
     }
 
+    public String getId(){ return docId; }
+
     public String getStoragetype() {
         return storagetype;
     }
