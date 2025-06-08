@@ -5,11 +5,7 @@ import static com.example.mobile_termproject.Acitivities.BaseActivity.db;
 import static com.example.mobile_termproject.Acitivities.BaseActivity.user;
 import static com.example.mobile_termproject.Acitivities.MainActivity.foodList;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,23 +15,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 
-import com.example.mobile_termproject.API.IngredientUtils;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,8 +109,6 @@ public class ItemEditActivity extends BottomSheetDialogFragment {
                 spinnerCategory.setAdapter(categoryAdapter);
             }
         });
-
-
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -23,17 +23,10 @@ import com.example.mobile_termproject.API.NaverAPI;
 import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.Data.NaverReturnResult;
-import com.example.mobile_termproject.Notification.ConfirmIngredientActivity;
 import com.example.mobile_termproject.Notification.ExpirationCalculator;
 import com.example.mobile_termproject.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 
 public class BarcodeAddActivity extends BaseActivity {

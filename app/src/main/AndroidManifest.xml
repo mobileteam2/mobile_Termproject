@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.mobile_termproject">
 
+    <!-- 카메라 사용을 선택사항으로 설정 -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!-- 카메라 권한 -->
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 외부 저장소 읽기/쓰기 권한 (Android 10 이하 호환용) -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+    <!-- 인터넷 권한 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- permisson for notification -->
-
+    <!-- 알림 권한 (Android 13 이상) -->
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"
         android:required="false" />
@@ -33,32 +38,43 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobile_termproject"
         tools:targetApi="31">
+
+        <!-- 알림 확인 화면 -->
         <activity
-            android:name=".Notification.ConfirmIngredientActivity"
+            android:name=".Acitivities.ConfirmIngredientActivity"
             android:exported="false" />
+
+        <!-- 런처 액티비티 -->
         <activity
             android:name=".Authentication.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 메인 화면 -->
         <activity
             android:name=".Acitivities.MainActivity"
             android:exported="true" />
+
+        <!-- 바코드 추가 화면 -->
         <activity
             android:name=".Acitivities.BarcodeAddActivity"
             android:exported="true" />
+
+        <!-- 로그인/회원가입 화면 -->
         <activity
             android:name=".Authentication.LoginActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Authentication.RegisterActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- 알림 리스너 서비스 -->
         <service
             android:name=".Notification.NotificationListener"
             android:enabled="true"
@@ -69,6 +85,12 @@
             </intent-filter>
         </service>
 
+        <!-- FileProvider 설정 -->
+        <!--
+             authorities는 코드에서
+             FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file)
+             와 일치해야 합니다.
+        -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -78,6 +100,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    </application>
 
+
+    </application>
 </manifest>

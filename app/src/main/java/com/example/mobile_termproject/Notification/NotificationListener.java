@@ -14,6 +14,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.mobile_termproject.API.NaverAPI;
+import com.example.mobile_termproject.Acitivities.ConfirmIngredientActivity;
 import com.example.mobile_termproject.Data.Expiration;
 import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.Data.NaverReturnResult;

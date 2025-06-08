@@ -1,4 +1,4 @@
-package com.example.mobile_termproject.Notification;
+package com.example.mobile_termproject.Acitivities;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -19,9 +19,6 @@ import com.example.mobile_termproject.R;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import android.widget.ImageView;
-import com.bumptech.glide.Glide;
 
 public class ConfirmIngredientActivity extends AppCompatActivity {
     private FoodItem foodItem;

@@ -1,13 +1,19 @@
 package com.example.mobile_termproject.Acitivities;
 
+import static com.example.mobile_termproject.Acitivities.BaseActivity.TAGdebug;
 import static com.example.mobile_termproject.Acitivities.BaseActivity.db;
 import static com.example.mobile_termproject.Acitivities.BaseActivity.user;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,33 +26,39 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.example.mobile_termproject.API.IngredientUtils;
+import com.example.mobile_termproject.Data.FoodItem;
 import com.example.mobile_termproject.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+/**
+ * ManualAddActivity: BottomSheetDialogFragment로 수동으로 식재료 추가 화면 구현
+ * - 카메라 호출과 촬영 결과를 ImageButton(imgIngredient)에 표시하도록 직접 구현하였습니다.
+ * - FoodItem 객체에는 “file://” URI 형태의 imageUrl을 저장합니다.
+ */
 public class ManualAddActivity extends BottomSheetDialogFragment {
+    private static final int REQUEST_IMAGE_CAPTURE = 1;       // 카메라 인텐트 요청 코드
+    private static final int REQUEST_CAMERA_PERMISSION = 100; // 카메라 권한 요청 코드
+
     private EditText etName, etExpiration;
     private Spinner spinnerCategory;
     private Button btnAdd;
     private ImageButton imgIngredient;
 
-    private Uri photoUri; // 촬영된 이미지 URI
-    private static final int REQUEST_IMAGE_CAPTURE = 1; // 카메라 요청 코드
+    // 촬영한 사진을 저장할 임시 File
+    private File photoFile;
 
     private CollectionReference ingredientsRef;
 
@@ -63,24 +75,22 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
     ) {
         View view = inflater.inflate(R.layout.manual_add, container, false);
 
-        // View 바인딩
-        etName = view.findViewById(R.id.etName);
-        etExpiration = view.findViewById(R.id.etExpiration);
+        // 1) 뷰 바인딩
+        etName         = view.findViewById(R.id.etName);
+        etExpiration   = view.findViewById(R.id.etExpiration);
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
-        btnAdd = view.findViewById(R.id.btnAdd);
-        imgIngredient = view.findViewById(R.id.imgIngredient);
+        btnAdd         = view.findViewById(R.id.btnAdd);
+        imgIngredient  = view.findViewById(R.id.imgIngredient);
 
-        // Firestore 참조 (유저1 하드코딩)
+        // 2) Firestore 컬렉션 참조 (현재 로그인된 유저 기준)
         String uid = user.getUid();
-        ingredientsRef = db.collection("users")
+        ingredientsRef = db
+                .collection("users")
                 .document(uid)
                 .collection("ingredients");
-
-
-
-
+        
+        // 3) 카테고리 Spinner 설정
         CollectionReference categoryRef = db.collection("ingredients");
-
         categoryRef.get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 List<String> categoryList = new ArrayList<>();
@@ -89,7 +99,6 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
                 for (DocumentSnapshot doc : task.getResult()){
                     categoryList.add(doc.getId());
                 }
-                // 카테고리 Spinner 설정
                 ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
                         requireContext(),
                         android.R.layout.simple_spinner_item,
@@ -101,72 +110,167 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
             }
         });
 
-        // 이미지버튼 클릭 시 카메라 실행 >>> 내부저장할지 아닐지 정해야함.
-        imgIngredient.setOnClickListener(v -> {
 
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-                File photoFile;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException e) {
-                    Toast.makeText(getContext(), "파일 생성 실패", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                photoUri = FileProvider.getUriForFile(
-                        requireContext(),
-                        requireContext().getPackageName() + ".provider",
-                        photoFile
+        // 4) imgIngredient 클릭 시 카메라 실행
+        imgIngredient.setOnClickListener(v -> {
+            // 4-1) 먼저 카메라 권한이 있는지 확인
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED) {
+                // 권한 요청
+                requestPermissions(
+                        new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CAMERA_PERMISSION
                 );
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+            } else {
+                // 이미 권한이 있으면 카메라 실행
+                dispatchTakePictureIntent();
             }
         });
 
-
         btnAdd.setOnClickListener(v -> {
-            String name = etName.getText().toString().trim();
-            String expiration = etExpiration.getText().toString().trim();
-            String category = spinnerCategory.getSelectedItem().toString();
+            String name            = etName.getText().toString().trim();
+            String expirationInput = etExpiration.getText().toString().trim();
+            String category        = spinnerCategory.getSelectedItem().toString();
 
-            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(expiration) || category.equals("카테고리")) {
+            // 필수 입력 확인
+            if (TextUtils.isEmpty(name)
+                    || TextUtils.isEmpty(expirationInput)
+                    || category.equals("카테고리")) {
                 Toast.makeText(getContext(), "모든 필드를 정확히 입력하세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String imageUriStr = (photoUri != null) ? photoUri.toString() : null;
+            // FoodItem 객체 생성
+            FoodItem foodItem = new FoodItem();
+            foodItem.setName(name);
+            foodItem.setCategory(category);
+            foodItem.setExpiration(expirationInput);
 
-            IngredientUtils.addIngredient(
-                    ingredientsRef,
-                    name,
-                    category,
-                    expiration,
-                    photoUri != null ? photoUri.toString() : null,
-                    () -> {
+            Log.d(TAGdebug, "사진 저장 전까지 완료");
+            // photoFile이 null 아니면 “file://” URI 형태로 imageUrl 저장
+            if (photoFile != null && photoFile.exists()) {
+                String fileUriString = "file://" + photoFile.getAbsolutePath();
+                foodItem.setImageUrl(fileUriString);
+            }
+
+            Log.d(TAGdebug, "사진 저장까지 완료");
+
+            long timestamp = System.currentTimeMillis();
+            foodItem.setTimestamp(timestamp);
+            /*
+            ExpirationCalculator.calculateExpirationDates(category, timestamp, r -> {
+                String frozen = r.get("냉동");
+                String refrigerated = r.get("냉장");
+                String room = r.get("실온");
+
+                foodItem.setExpirationc(new Expiration(
+                        frozen,
+                        refrigerated,
+                        room
+                ));
+                foodItem.setTimestamp(timestamp);
+
+                Intent intent = new Intent(getContext(), ConfirmIngredientActivity.class);
+                intent.putExtra("name", foodItem.getName());
+                intent.putExtra("category", foodItem.getCategory());
+                intent.putExtra("frozen", frozen);
+                intent.putExtra("refrigerated", refrigerated);
+                intent.putExtra("room", room);
+                intent.putExtra("timestamp", foodItem.getTimestamp());
+                intent.putExtra("imageUrl", foodItem.getImageUrl());
+
+                startActivity(intent);
+            });
+            */
+
+            // Firestore에 업로드
+            ingredientsRef
+                    .add(foodItem)
+                    .addOnSuccessListener(documentReference -> {
                         Toast.makeText(getContext(), "식재료가 추가되었습니다!", Toast.LENGTH_SHORT).show();
                         dismiss();
-                    },
-                    e -> Toast.makeText(getContext(), "추가 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-            );
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "추가 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+
         });
 
         return view;
     }
 
-    // 파일 저장용 임시 이미지 파일 생성
+    // ————————— 카메라 인텐트 실행 메서드 —————————
+    private void dispatchTakePictureIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // 결과를 받을 Receiver가 Fragment여야 onActivityResult가 호출됨
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            try {
+                // 임시 파일 생성
+                photoFile = createImageFile();
+            } catch (IOException e) {
+                Toast.makeText(getContext(), "파일 생성 실패", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // FileProvider를 통해 URI 생성 (authority는 반드시 "${applicationId}.fileprovider")
+            Uri photoURI = FileProvider.getUriForFile(
+                    requireContext(),
+                    requireContext().getPackageName() + ".fileprovider",
+                    photoFile
+            );
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            // Fragment에서 호출해야 onActivityResult로 돌아옵니다.
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        } else {
+            Toast.makeText(getContext(), "카메라를 실행할 수 없습니다", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ————————— 파일 생성 메서드 —————————
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String fileName = "IMG_" + timeStamp;
-        File storageDir = requireContext().getFilesDir(); // 내부 저장소 경로
-        return new File(storageDir, fileName + ".jpg");
+        // 앱 내부 저장소(getFilesDir())에 저장
+        File storageDir = requireContext().getFilesDir();
+        return File.createTempFile(fileName, ".jpg", storageDir);
     }
 
-    // 사진 촬영 후 호출되는 메서드 (이미지 버튼에 이미지 표시)
+    // ————————— 권한 요청 결과 처리 —————————
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 허용되었으면 카메라 실행
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(getContext(), "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // ————————— 카메라 촬영 결과 받는 콜백 —————————
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-            imgIngredient.setImageURI(photoUri);
+            if (photoFile != null && photoFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                if (bitmap != null) {
+                    imgIngredient.setImageBitmap(bitmap);
+                } else {
+                    Toast.makeText(getContext(), "이미지를 불러올 수 없습니다", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "촬영된 사진을 찾을 수 없습니다", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
