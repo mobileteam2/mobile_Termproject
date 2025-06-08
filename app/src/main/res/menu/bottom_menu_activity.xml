@@ -4,12 +4,12 @@
     <item
         android:title="@string/bottom_menu_home"
         android:id="@+id/bottomBar_myRefri"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:icon="@drawable/home"
          />
     <item
-        android:title="@string/bottom_menu_community"
-        android:id="@+id/bottomBar_community"
-        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/bottom_menu_price_check"
+        android:id="@+id/bottomBar_price_check"
+        android:icon="@drawable/sell"
          />
     <item
         android:title="@string/bottom_menu_recipe"

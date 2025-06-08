@@ -43,12 +43,21 @@ public class NotificationIngredientExtractor {
     }
 
     private String extractBeforeKeyword(String source, String keyword) {
-        if (source == null) return "";
-        int idx = source.indexOf(keyword);
-        if (idx > 0) {
-            return source.substring(0, idx).trim();
+        if (source == null || keyword == null) return "";
+
+        int keywordIndex = source.indexOf(keyword);
+        if (keywordIndex != -1) {
+            // keyword 앞부분 추출
+            String before = source.substring(0, keywordIndex).trim();
+
+            // ... 또는 … 제거
+            before = before.replace("...", "").replace("…", "").trim();
+
+            return before;
         }
-        return source;
+
+        // keyword가 없으면 전체 텍스트 정리해서 반환
+        return source.replace("...", "").replace("…", "").trim();
     }
 }
 

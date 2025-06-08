@@ -78,10 +78,12 @@ public class NaverAPI {
                         String category2 = item.optString("category2", "");
                         String category3 = item.optString("category3", "");
                         String category4 = item.optString("category4", "");
+                        String price = item.optString("lprice", "");
+                        String link = item.optString("link", "");
 
                         // 필요한 데이터 객체 생성
                         NaverReturnResult result = new NaverReturnResult(
-                                name, image,
+                                name, image, price, link,
                                 category1, category2, category3, category4
                         );
 

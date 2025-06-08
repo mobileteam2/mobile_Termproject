@@ -29,6 +29,7 @@ import com.example.mobile_termproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -112,6 +113,8 @@ public class BarcodeAddActivity extends BaseActivity {
                                         Log.e(TAGdebug, "식재료 저장 실패", e);
                                     });
 
+                            // 가격 추이 추적 리스트에 등록
+                            addToPriceWatchList(foodItem.getName());
                         }
 
                         @Override
@@ -190,5 +193,20 @@ public class BarcodeAddActivity extends BaseActivity {
         }
 
         manager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+    private void addToPriceWatchList(String foodName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String safeName = foodName.replaceAll("[.#$/\\[\\]]", "_");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", foodName);
+        data.put("lastChecked", null); // 최초 등록이므로 null
+
+        db.collection("price_watch_list")
+                .document(safeName)
+                .set(data)
+                .addOnSuccessListener(unused -> Log.d("PriceWatchList", "추가됨: " + foodName))
+                .addOnFailureListener(e -> Log.e("PriceWatchList", "추가 실패", e));
     }
 }
