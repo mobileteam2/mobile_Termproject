@@ -26,7 +26,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
 import android.Manifest;
 import android.util.Log;
 import android.widget.Toast;
@@ -48,7 +52,11 @@ public class Barcode {
     public Barcode(){}
 
     public File getPhotoFile(){
-        return photoFile;
+        return this.photoFile;
+    }
+
+    public void setPhotoFile(File photoFile){
+        this.photoFile = photoFile;
     }
 
     public void onRequestPermissionsResult(Activity activity, int requestCode,
@@ -84,13 +92,19 @@ public class Barcode {
                     storageDir.mkdirs();
                 }
 
-                photoFile = new File(storageDir, "image.png");
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+                String fileName = "image_" + timeStamp + ".png";
+
+                photoFile = new File(storageDir, fileName);
+                this.setPhotoFile(photoFile);
+
                 photoUri = FileProvider.getUriForFile(
                         activity,
                         activity.getPackageName() + ".fileprovider",
                         photoFile
                 );
 
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 activity.startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             } catch (Exception e) {
@@ -173,31 +187,45 @@ public class Barcode {
             connection.setRequestProperty("User-Agent", "Android-App");
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setReadTimeout(15000);
             responseCode = connection.getResponseCode();
-
-
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String returnStr = reader.readLine();
                 reader.close();
                 if (returnStr != null){
-                    result = returnStr;
+
+                    result = cleanProductName(returnStr);
                 } else{
-                    result = "NULL";
+                    result = null;
                 }
             } else {
-                result = "서버 응답 오류: " + responseCode;
+                result = null;
+                Log.d(TAGDebug, "서버 응답 오류: " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = "요청 실패: " + e;
+            Log.d(TAGDebug, "요청 실패: " + e);
+            result = null;
         }
-        Log.d(TAGDebug, "요청 URL: " + urlStr);
-        Log.d(TAGDebug, "응답 코드: " + responseCode);
-        Log.d(TAGDebug, "서버 응답 내용: " + result);
         return result;
+    }
+
+    public String cleanProductName(String rawName) {
+        rawName = rawName.toLowerCase();
+        String cleaned = rawName.replaceAll("\\[[^\\]]*\\]", "").trim();
+        cleaned = cleaned.replaceAll("\\d+(ml|g|kg|개|입|장|팩|L|ℓ|박스|box)", "");
+        cleaned = cleaned.replaceAll("(\\+|×|x|세트|기획|한정|증정|사은품)", "");
+        cleaned = cleaned.replaceAll("\\(주\\)[^\\s]+.*", "");
+
+        cleaned = cleaned.replaceAll("^(주)?[a-z가-힣\\d]+\\s+", ""); // 시작 회사명 제거
+        cleaned = cleaned.replaceAll("\\s+(주)?[a-z가-힣\\d]+$", ""); // 끝 회사명 제거
+
+
+        cleaned = cleaned.replaceAll("\\s{2,}", " ").trim();
+
+        return cleaned;
     }
 
 }

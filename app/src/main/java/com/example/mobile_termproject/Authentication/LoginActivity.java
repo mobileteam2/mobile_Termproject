@@ -49,10 +49,10 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(this, "로그인 성공: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_msg_login_success) + user.getEmail(), Toast.LENGTH_SHORT).show();
                         goToMain();
                     } else {
-                        Toast.makeText(this, "로그인 실패: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_msg_login_fail) + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

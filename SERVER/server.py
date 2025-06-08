@@ -9,10 +9,7 @@ from selenium.webdriver.chrome.service import Service
 import os
 app = Flask(__name__)
 
-@app.route('/')
-def root():
-    print("✅ 루트 도착")
-    return "Flask OK"
+cache = {}
 
 @app.route('/getInfo', methods=['GET'])
 def get_product_info():
@@ -22,12 +19,22 @@ def get_product_info():
     if not barcode:
         return jsonify({'error': 'No barcode provided'}), 400
 
+    if barcode in cache:
+        return Response(cache[barcode], mimetype='text/plain')
+    
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")  # 💡 중요
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-images")
+    chrome_prefs = {
+        "profile.default_content_settings": {"images": 2},
+    }
+    chrome_options.experimental_options["prefs"] = chrome_prefs
+    
     # -------------------------------------
     # chromeDirver가 시스템 환경변수에 설정된 경우
     # -------------------------------------
@@ -60,6 +67,8 @@ def get_product_info():
 
         product_name_elem = driver.find_element(By.CSS_SELECTOR, "div.cont .nm")
         product_name = product_name_elem.text.strip()
+        
+        cache[barcode] = product_name
         
         return Response(product_name, mimetype='text/plain')
     

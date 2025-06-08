@@ -31,11 +31,14 @@ import com.example.mobile_termproject.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ItemEditActivity extends BottomSheetDialogFragment {
@@ -95,16 +98,29 @@ public class ItemEditActivity extends BottomSheetDialogFragment {
                 .document(uid)
                 .collection("ingredients");
 
+        CollectionReference categoryRef = db.collection("ingredients");
 
-        // 카테고리 Spinner 설정
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                new String[]{"카테고리", "육류", "유제품", "과일", "채소"}
-        );
+        categoryRef.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                List<String> categoryList = new ArrayList<>();
+                categoryList.add("카테고리");
 
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
+                for (DocumentSnapshot doc : task.getResult()){
+                    categoryList.add(doc.getId());
+                }
+                // 카테고리 Spinner 설정
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        categoryList
+                );
+
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCategory.setAdapter(categoryAdapter);
+            }
+        });
+
+
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,7 +44,7 @@ public class BarcodeAddActivity extends BaseActivity {
     NaverAPI api = new NaverAPI();
     private String foodName = null;
     private String barcodeValue = null;
-
+    private String frozen, refrigerated, room;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class BarcodeAddActivity extends BaseActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                barcode.launchCamera(BarcodeAddActivity.this, Boolean.TRUE);
+                barcode.launchCamera(BarcodeAddActivity.this);
                 btnCamera.setText(R.string.add_barcode_activity_resend_btn);
             }
         });
@@ -69,57 +70,64 @@ public class BarcodeAddActivity extends BaseActivity {
                     foodName = barcode.getInfo(barcodeValue);
                     Log.d(TAGdebug, "FOOD NAME: \n" + foodName);
 
+                    if(foodName == null){
+                        Toast.makeText(BarcodeAddActivity.this, "서버 응답 오류", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     Log.d(TAGdebug, "네이버 API 호출");
                     api.getInfoNaver(foodName, new NaverAPI.NaverCallback() {
                         @Override
                         public void onSuccess(NaverReturnResult result) {
-                            Log.d(TAGdebug, "name : " + result.name);
-                            Log.d(TAGdebug, "iamgeUrl : " + result.imageUrl);
-                            Log.d(TAGdebug, "category : " + result.toString());
-
-                            Map<String, Objects> item = new HashMap<>();
-
                             long timestamp = System.currentTimeMillis();
                             String category = result.getFinalCategory();
+                            String imageUrl = result.getImageUrl();
+
                             FoodItem foodItem = new FoodItem();
+                            foodItem.setName(foodName);
+                            foodItem.setCategory(category);
+                            foodItem.setImageUrl(imageUrl);
+
+                            Log.d(TAGdebug, "imageUrl : " + foodItem.getImageUrl());
+                            Log.d(TAGdebug, "category : " + result.toString());
+
 
                             ExpirationCalculator.calculateExpirationDates(category, timestamp, r -> {
+                                frozen = r.get("냉동");
+                                refrigerated = r.get("냉장");
+                                room = r.get("실온");
                                 // FoodItem 임시 생성
-                                foodItem.setName(result.name);
-                                foodItem.setCategory(category);
                                 foodItem.setExpirationc(new Expiration(
-                                        r.get("냉동"),
-                                        r.get("냉장"),
-                                        r.get("실온")
+                                        frozen,
+                                        refrigerated,
+                                        room
                                 ));
                                 foodItem.setTimestamp(timestamp);
 
                                 // 사용자에게 앱 알림 발송 (FoodItem 객체를 intent로 전달)
                                 sendUserNotification(foodItem);
-                                Log.d(TAGdebug, "앱 알림 발송 : " + r.get("실온") + " / " + r.get("냉장") + " / " + r.get("냉동"));
+                                Log.d(TAGdebug, "앱 알림 발송 : " + frozen + " / " + refrigerated + " / " + room);
+
+                                Intent intent = new Intent(BarcodeAddActivity.this, ConfirmIngredientActivity.class);
+                                intent.putExtra("name", foodItem.getName());
+                                intent.putExtra("category", foodItem.getCategory());
+                                intent.putExtra("frozen", frozen);
+                                intent.putExtra("refrigerated", refrigerated);
+                                intent.putExtra("room", room);
+                                intent.putExtra("timestamp", foodItem.getTimestamp());
+                                intent.putExtra("imageUrl", foodItem.getImageUrl());
+
+                                startActivity(intent);
                             });
 
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            String uid = user.getUid();
-                            CollectionReference ingredientsRef = db.collection("users").document(uid).collection("ingredients");
-
-                            foodItem.setImageUrl(result.imageUrl);
-
-                            ingredientsRef.add(foodItem)
-                                    .addOnSuccessListener(documentReference -> {
-                                        Log.d(TAGdebug, "식재료 저장 성공: " + documentReference.getId());
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.e(TAGdebug, "식재료 저장 실패", e);
-                                    });
-
+                            finish();
                             // 가격 추이 추적 리스트에 등록
                             addToPriceWatchList(foodItem.getName());
                         }
 
                         @Override
                         public void onFailure(Exception e) {
-
+                            Log.d(TAGdebug, "NAVER API 실패: " + e.getMessage());
                         }
                     });
                 }).start();
@@ -134,10 +142,15 @@ public class BarcodeAddActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == barcode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Log.d(TAGdebug, "사진 보내기 성공");
-
-            String imagePath = barcode.getPhotoFile().getAbsolutePath();
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-
+            File latestPhotoFile = barcode.getPhotoFile();
+            String imagePath = null;
+            Bitmap bitmap = null;
+            if(latestPhotoFile != null){
+                imagePath = latestPhotoFile.getAbsolutePath();
+                bitmap = BitmapFactory.decodeFile(imagePath);
+            }
+            Log.d(TAGdebug, "이미지 경로: "+imagePath);
+            Log.d(TAGdebug, "파일 존재 여부: " +latestPhotoFile.exists());
             if (bitmap != null) {
                 imgCamera.setImageBitmap(bitmap);
             } else {

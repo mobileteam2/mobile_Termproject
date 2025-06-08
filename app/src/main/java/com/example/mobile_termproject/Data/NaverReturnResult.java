@@ -37,9 +37,8 @@ public class NaverReturnResult {
         return name;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public String getImageUrl() { return imageUrl; }
+
     @Override
     public String toString() {
         return String.join(" > ", category1, category2, category3, category4);

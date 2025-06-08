@@ -26,13 +26,16 @@ import com.example.mobile_termproject.API.IngredientUtils;
 import com.example.mobile_termproject.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -76,14 +79,27 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
 
 
 
-        // 카테고리 Spinner 설정
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                new String[]{"카테고리", "육류", "유제품", "과일", "채소"}
-        );
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
+        CollectionReference categoryRef = db.collection("ingredients");
+
+        categoryRef.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                List<String> categoryList = new ArrayList<>();
+                categoryList.add("카테고리");
+
+                for (DocumentSnapshot doc : task.getResult()){
+                    categoryList.add(doc.getId());
+                }
+                // 카테고리 Spinner 설정
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        categoryList
+                );
+
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCategory.setAdapter(categoryAdapter);
+            }
+        });
 
         // 이미지버튼 클릭 시 카메라 실행 >>> 내부저장할지 아닐지 정해야함.
         imgIngredient.setOnClickListener(v -> {
@@ -106,9 +122,6 @@ public class ManualAddActivity extends BottomSheetDialogFragment {
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         });
-
-
-
 
 
         btnAdd.setOnClickListener(v -> {

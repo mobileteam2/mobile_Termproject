@@ -2,7 +2,7 @@ package com.example.mobile_termproject.API;
 
 public class ApiManager {
     //FLASK SEVER IP
-    public static final String FLASKIP = "https://5879-2001-e60-9190-dc58-c821-6310-f297-d2f2.ngrok-free.app";
+    public static final String FLASKIP = "https://c18b-221-165-253-74.ngrok-free.app";
 
     //NAVER API
     public static final String CLIENT_ID = "hVnMr1Cg0gzWRqQAvPOs";

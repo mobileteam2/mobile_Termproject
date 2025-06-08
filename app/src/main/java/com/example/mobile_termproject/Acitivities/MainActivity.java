@@ -44,15 +44,12 @@ public class MainActivity extends BaseActivity {
                 .document(uid)
                 .collection("ingredients");
 
-        Log.d(TAGdebug, "ingredientsRef 연결됨: " + ingredientsRef.getPath());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         setTopAndBottomBar();
 
         lvFoods = findViewById(R.id.lvFoods);
-
 
         // 2) 어댑터 생성 및 연결
         adapter = new FoodItemAdapter(this, R.layout.item_food, foodList, new FoodItemAdapter.onItemButtonClickListener() {
@@ -65,7 +62,6 @@ public class MainActivity extends BaseActivity {
                 });
                 dialog.show(getSupportFragmentManager(), "ItemEditDialog");
             }
-
             @Override
             public void onDeleteButtonClick(int position) {
                 FoodItem item = foodList.get(position);
@@ -73,7 +69,6 @@ public class MainActivity extends BaseActivity {
                 ingredientsRef.document(docId)
                         .delete()
                         .addOnSuccessListener(aVoid -> {
-                            Log.d(TAGdebug, "삭제 성공: " + docId);
                             foodList.remove(position);
                             adapter.notifyDataSetChanged();
                         })
@@ -82,6 +77,7 @@ public class MainActivity extends BaseActivity {
                         });
             }
         });
+
         lvFoods.setAdapter(adapter);
 
         btnAddFood = findViewById(R.id.fab_add_item); // 추가 버튼도 바인딩
@@ -124,8 +120,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-
     @Override
     protected void setTopAndBottomBar() {
         super.setTopAndBottomBar();
@@ -140,13 +134,15 @@ public class MainActivity extends BaseActivity {
                 String name = doc.getString("name");
                 String category = doc.getString("category");
                 String expiration = doc.getString("expiration");  // 예시: 기한 필드명
+                String imageUrl = doc.getString("imageUrl");
                 String id = doc.getId();
-                String imgUrl = doc.getString("imageUrl");
-                foodList.add(new FoodItem(name, category, expiration, id, imgUrl));
+
+                foodList.add(new FoodItem(name, category, expiration, id, imageUrl));
             }
             adapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
             Log.e("Firestore", "불러오기 실패", e);
+            Log.d(TAGdebug, "로드 실패: " + e.getMessage());
         });
     }
 
@@ -159,5 +155,11 @@ public class MainActivity extends BaseActivity {
         } else {
             return NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.getPackageName());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadIngredientsFromFirestore();
     }
 }

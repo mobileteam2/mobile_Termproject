@@ -1,6 +1,7 @@
 [versions]
 agp = "8.9.1"
 barcodeScanning = "17.3.0"
+compiler = "4.16.0"
 gson = "2.11.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,6 +21,8 @@ mpandroidchart = "3.1.0"
 
 [libraries]
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "compiler" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -33,7 +36,7 @@ material-v1110 = { module = "com.google.android.material:material", version.ref 
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 
