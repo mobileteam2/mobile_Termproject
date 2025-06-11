@@ -109,7 +109,7 @@ public class NotificationListener extends NotificationListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "confirm_channel")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.app_logo)
                 .setContentTitle("새 식재료 감지됨")
                 .setContentText(item.getName() + " 정보를 확인하세요")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -140,9 +140,10 @@ public class NotificationListener extends NotificationListenerService {
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "disconnect_channel")
-                .setContentTitle("알림 서비스 연결 끊김")
-                .setContentText("앱을 다시 실행해주세요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSmallIcon(R.drawable.app_logo)
+                .setContentTitle("연결 종료됨")
+                .setContentText("알림 리스너가 끊어졌습니다.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
         // Android 8.0 이상은 채널 생성 필요

@@ -7,6 +7,7 @@
 
     <!-- 하단 메뉴 -->
     <string name="bottom_menu_home">냉장고</string>
+    <string name="bottom_menu_price_check">가격확인</string>
     <string name="bottom_menu_community">커뮤니티</string>
     <string name="bottom_menu_recipe">레시피 추천</string>
     <string name="bottom_menu_others">기타</string>

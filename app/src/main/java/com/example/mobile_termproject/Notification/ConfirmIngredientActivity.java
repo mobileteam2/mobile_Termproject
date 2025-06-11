@@ -1,6 +1,7 @@
 package com.example.mobile_termproject.Notification;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfirmIngredientActivity extends AppCompatActivity {
     private FoodItem foodItem;
@@ -157,6 +161,9 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "저장 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
+
+            // 가격 추이 추적 리스트에 등록
+            addToPriceWatchList(foodItem.getName());
         });
 
         btnCancel.setOnClickListener(v -> {
@@ -174,4 +181,20 @@ public class ConfirmIngredientActivity extends AppCompatActivity {
             card.setStrokeColor(getColor(R.color.md_theme_light_primary));
         }
     }
+
+    private void addToPriceWatchList(String foodName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String safeName = foodName.replaceAll("[.#$/\\[\\]]", "_");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", foodName);
+        data.put("lastChecked", null); // 최초 등록이므로 null
+
+        db.collection("price_watch_list")
+                .document(safeName)
+                .set(data)
+                .addOnSuccessListener(unused -> Log.d("PriceWatchList", "추가됨: " + foodName))
+                .addOnFailureListener(e -> Log.e("PriceWatchList", "추가 실패", e));
+    }
+
 }

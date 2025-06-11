@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/topBar_userMenu"
+        android:icon="@drawable/menu"
         android:title="@string/top_user_menu"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
 </menu>
